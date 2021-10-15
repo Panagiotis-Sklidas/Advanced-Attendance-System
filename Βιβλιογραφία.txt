@@ -12,6 +12,7 @@ Playful Technology. (2018, December 5). RFID Roundup! [Video]. YouTube. https://
 
 
 ***Face Recognition Algorithm***
+Rosebrock, A. (2021, July 4). OpenCV Face Recognition. PyImageSearch. https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
 
 
 ***User friendly UI***
