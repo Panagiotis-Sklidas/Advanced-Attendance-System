@@ -1,1 +1,1 @@
-# Controlled-entry-using-RFID-FaceRecognition
+# Controlled entry using RFID tags and Face Recognition
