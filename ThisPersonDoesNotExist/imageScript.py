@@ -2,6 +2,18 @@
 import urllib.request
 from datetime import datetime
 import time
+import numpy as np
+
+
+chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+         'U', 'V', 'W', 'Y', 'X', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+
+def createname():
+    filename = ''
+    for i in range(0, 8):
+        filename += chars[np.random.randint(0, 35)]
+    return filename
 
 
 def acquirefaceimages():
@@ -9,7 +21,7 @@ def acquirefaceimages():
     start = datetime.now()
 # Downloading images from thispersondoesnotexist.com
     for i in range(0, rng):
-        filename = str(i+1) + '.jpg'
+        filename = createname() + '.jpg'
         req = urllib.request.build_opener()
         req.addheaders = [('User-Agent', '')]
         urllib.request.install_opener(req)
@@ -22,13 +34,5 @@ def acquirefaceimages():
     print('\nDownloading', rng, 'images took', datetime.now() - start)
 
 
-def checkfaceimage():
-    print("Reduce face set coming soon")
-
-
-action = int(input('To download face images press \"1\" to reduce the dataset press \"2\": '))
-
-if action == 1:
-    acquirefaceimages()
-else:
-    checkfaceimage()
+createname()
+acquirefaceimages()
