@@ -219,11 +219,27 @@ def load_sector():
     sector.tkraise()
     sector.pack_propagate(False)
     res = fetchsectors()
+
+    # Create table to show the data
+    sectortable = ttk.Treeview(sector)
+    # table.configure(height=290)
+    sectortable['columns'] = ("id", "name")  # Create columns
+    sectortable.column("#0", width=0)  # Phantom column
+    sectortable.column("id", anchor=CENTER, width=100, minwidth=25)
+    sectortable.column("name", anchor=W, width=290, minwidth=30)
+    # Setting headers
+    sectortable.heading("#0", text="", anchor=W)
+    sectortable.heading("id", text="Sector ID", anchor=CENTER)
+    sectortable.heading("name", text="Sector Name", anchor=W)
+
     for i in range(0, len(res)):
         result = res[i]
-        lbl = tk.Label(sector, text=result, bg=bg_color, fg=fg_color)
+        # lbl = tk.Label(sector, text=result, bg=bg_color, fg=fg_color)
         # lbl.grid(row=1, column=0, rowspan=100, columnspan=3, pady=20, padx=20)
-        lbl.pack(pady=15, padx=20)
+        # lbl.pack(pady=15, padx=20)
+        sectortable.insert(parent='', index='end', iid=i+1, values=result)
+        sectortable.grid(row=0, column=1, rowspan=4, sticky='new', pady=20, padx=20)
+
     insrtsec = tk.Button(sector, text='Insert Sector', command=lambda: insec(), height=1, width=13, font='Raleway',
                          cursor='hand2')
     insrtsec.grid(row=0, column=0, pady=20, padx=10)

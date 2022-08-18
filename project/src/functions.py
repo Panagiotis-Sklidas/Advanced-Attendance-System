@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from database import *
 
-# os.makedirs('C:/AdvancedAttendanceSystem')
+
 def createfilepath():
     if os.path.exists('C:/AdvancedAttendanceSystem'):
         pass
