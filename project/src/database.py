@@ -58,11 +58,24 @@ def fetchsector(sectorid: int):
     return res
 
 
+def updatesector(sectorid: int, sectorname: str):
+    sector = (sectorname, sectorid)
+    conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
+    cur = conn.cursor()
+    cur.execute("""UPDATE SECTOR SET sector_name=? WHERE sector_id=?;""", sector)
+    conn.commit()
+    conn.close()
+
+
 def deletesector(sectorid: int):
     conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
     cur = conn.cursor()
-    cur.execute("INSERT INTO SECTOR (sector_name) VALUES (?);", (sectorid,))
-    conn.commit()
+    res = selectemployeebysector(sectorid)
+    if res == []:
+        cur.execute("DELETE FROM SECTOR WHERE sector_id=(?);", (sectorid,))
+        conn.commit()
+    else:
+        raise conn.Error()
     conn.close()
 
 
@@ -107,17 +120,27 @@ def selectemployeebyemail(email: str):
     return res
 
 
-def updateemployee(cuid: str, firstname: str, lastname: str, email: str, phone: str, position: str, sectorid: int):
-    employee = (firstname.upper(), lastname.upper(), phone, position.upper(), sectorid, cuid)
+def selectemployeebysector(sectorid: int):
     conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
     cur = conn.cursor()
-    cur.execute("""UPDATE EMPLOYEE SET first_name=?, last_name=?, phone=?, job_position=?, sector_id=?
+    cur.execute("SELECT * FROM EMPLOYEE WHERE sector_id=(?);", (sectorid,))
+    res = cur.fetchall()
+    conn.commit()
+    conn.close()
+    return res
+
+
+def updateemployee(cuid: str, firstname: str, lastname: str, email: str, phone: str, position: str, sectorid: int):
+    employee = (firstname.upper(), lastname.upper(), email.lower(), phone, position.upper(), sectorid, cuid)
+    conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
+    cur = conn.cursor()
+    cur.execute("""UPDATE EMPLOYEE SET first_name=?, last_name=?, email=?, phone=?, job_position=?, sector_id=?
     WHERE uid=?;""", employee)
     conn.commit()
     conn.close()
 
 
-def deleteuser(cuid: str):
+def deleteemployee(cuid: str):
     conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
     cur = conn.cursor()
     cur.execute("DELETE FROM EMPLOYEE WHERE uid=(?);", (cuid,))
