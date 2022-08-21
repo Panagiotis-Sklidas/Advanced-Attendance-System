@@ -9,6 +9,7 @@ chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', '
          'U', 'V', 'W', 'Y', 'X', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
+# Returns random 8 char long name for the image
 def createname():
     filename = ''
     for i in range(0, 8):
@@ -34,5 +35,4 @@ def acquirefaceimages():
     print('\nDownloading', rng, 'images took', datetime.now() - start)
 
 
-createname()
 acquirefaceimages()
