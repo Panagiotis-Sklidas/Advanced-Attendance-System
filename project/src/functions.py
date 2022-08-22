@@ -5,6 +5,7 @@ import numpy as np
 from database import *
 
 
+# Checks if there is the program folder in c drive, otherwise creates it
 def createfilepath():
     if os.path.exists('C:/AdvancedAttendanceSystem'):
         pass
@@ -12,6 +13,7 @@ def createfilepath():
         os.makedirs('C:/AdvancedAttendanceSystem')
 
 
+# Firstly checks if an RFID reader is connected and then trys to read the uid from the card
 def readuid():
     r = readers()
     if len(r) < 1:
@@ -36,6 +38,8 @@ def readuid():
     return carduid
 
 
+# A function that creates business email using first and last name
+# Also checks if the generated email has already been taken and if this is true then adds an extra random letter
 def generateemail(firstname: str, lastname: str):
     email = firstname.lower()[:2] + lastname.lower()[:5] + '@company.com'
     res = selectemployeebyemail(email)  # Search if there is a user with the same email

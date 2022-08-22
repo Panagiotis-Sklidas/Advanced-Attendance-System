@@ -12,7 +12,7 @@ from tkcalendar import DateEntry
 import database as databasefile
 import functions as functionsfile
 
-
+# Initialize app
 functionsfile.createfilepath()
 
 databasefile.createdb()
@@ -24,6 +24,7 @@ green = '#30ba55'
 red = '#d10202'
 blue = '#1757b0'
 
+# Build main window
 base = Tk()
 base.iconbitmap(r'assets/facivon_bl.ico')
 base.title('Advanced Attendance System')
@@ -50,6 +51,7 @@ def clear_screen(screen):
         widget.destroy()
 
 
+# Create homescreen
 def load_homescreen():
     clear_screen(signup)
     clear_screen(signin)
@@ -74,6 +76,7 @@ def load_homescreen():
     signinbtn.grid(row=2, column=2, pady=45)
 
 
+# Create signup
 def load_signup():
     clear_screen(homescreen)
     signup.tkraise()
@@ -149,6 +152,7 @@ def load_signup():
     acceptbtn.grid(row=11, column=2, pady=50, padx=20)
 
 
+# Tries to read the card's uid and display it on screen
 def cuid():
     cid.configure(state='normal')
     cid.delete(0, END)
@@ -161,6 +165,7 @@ def cuid():
                            ' and try again')
 
 
+# Tries to generate email using the function generateemail from functions.py
 def gemail():
     email.configure(state='normal')
     email.delete(0, END)
@@ -171,9 +176,11 @@ def gemail():
         showerror('Error', 'Make sure that you have filled your first and last name and try again')
 
 
+ # Performing the neccesery checks before attempting to insert employee to db
 def accept():
     isadult = int(jd.get().split('-')[0]) - int(dob.get().split('-')[0])
 
+    # Checks if all fields are filled and if the person is 18 years old
     if (len(cid.get()) == 0) or (len(fn.get()) == 0) or (len(ln.get()) == 0) or (len(email.get()) == 0) or \
             (len(phone.get()) < 10) or (len(dob.get()) == 0) or (len(jd.get()) == 0) or (len(jp.get()) == 0) or \
             (se.get() == sectors[0] or (isadult < 18)):
@@ -182,6 +189,7 @@ def accept():
                   'Somthing went wrong:\n1) All or some values are been missing\n2) Or the employee is not old enough '
                   '(18 years old)\nMake sure that you have check all of the above and try again')
     else:
+        # Tries to insert umployee
         sector = se.get().split()
         dt = dob.get_date()
         db = dt.strftime("%Y-%m-%d")
@@ -209,6 +217,7 @@ def load_signin():
     backbtn.grid(row=2, column=2, pady=50, padx=20)
 
 
+# Create employee screen
 def load_employees():
     clear_screen(homescreen)
     employees.tkraise()
@@ -254,7 +263,7 @@ def load_employees():
     employeetable.tag_configure('odd', background=white)
 
     counter = 0
-
+    # Creating the table
     res = databasefile.fetchemployees()
     for i in range(0, len(res)):
         result = res[i]
@@ -277,55 +286,57 @@ def load_employees():
     backempl.grid(row=3, column=0, pady=440, padx=20)
 
 
+# Creating update employee pop up
 def updempl():
-    # global ue
-    ue = Toplevel()
-    ue.title('AAS - Update employee')
-    ue.iconbitmap(r'assets/facivon_bl.ico')
-    ue.focus_force()
-    ue.tkraise()
-    ue.configure(background=darkgrey)
-    ue.pack_propagate(False)
-    ue.geometry('500x500')
-    ue.resizable(False, False)
+    # global empludtpu
+    empludtpu = Toplevel()
+    empludtpu.title('AAS - Update employee')
+    empludtpu.iconbitmap(r'assets/facivon_bl.ico')
+    empludtpu.focus_force()
+    empludtpu.tkraise()
+    empludtpu.configure(background=darkgrey)
+    empludtpu.pack_propagate(False)
+    empludtpu.geometry('500x500')
+    empludtpu.resizable(False, False)
 
-    lbl = tk.Label(ue, text='UID:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl = tk.Label(empludtpu, text='UID:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl.grid(row=1, column=0, pady=10, padx=20)
-    lbl1 = tk.Label(ue, text='First name:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl1 = tk.Label(empludtpu, text='First name:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl1.grid(row=2, column=0, pady=10, padx=20)
-    lbl2 = tk.Label(ue, text='Last name:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl2 = tk.Label(empludtpu, text='Last name:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl2.grid(row=3, column=0, pady=10, padx=20)
-    lbl3 = tk.Label(ue, text='Email:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl3 = tk.Label(empludtpu, text='Email:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl3.grid(row=4, column=0, pady=10, padx=20)
-    lbl4 = tk.Label(ue, text='Phone:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl4 = tk.Label(empludtpu, text='Phone:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl4.grid(row=5, column=0, pady=10, padx=20)
-    lbl5 = tk.Label(ue, text='Job position:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl5 = tk.Label(empludtpu, text='Job position:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl5.grid(row=6, column=0, pady=10, padx=20)
-    lbl6 = tk.Label(ue, text='Sector:', bg=darkgrey, fg=white, padx=10, pady=10)
+    lbl6 = tk.Label(empludtpu, text='Sector:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl6.grid(row=7, column=0, pady=10, padx=20)
 
-    eid = tk.Entry(ue, width=30, bg=white)
+    # Filling the entrys with employees data
+    eid = tk.Entry(empludtpu, width=30, bg=white)
     eid.insert(0, employeetable.item(employeetable.focus()).get('values')[0])
     eid.configure(state='disabled')  # Make field read-only
     eid.grid(row=1, column=1, pady=10, padx=20)
-    efn = tk.Entry(ue, width=30, bg=white)
+    efn = tk.Entry(empludtpu, width=30, bg=white)
     efn.insert(0, employeetable.item(employeetable.focus()).get('values')[1])
     efn.grid(row=2, column=1, pady=10, padx=20)
-    eln = tk.Entry(ue, width=30, bg=white)
+    eln = tk.Entry(empludtpu, width=30, bg=white)
     eln.insert(0, employeetable.item(employeetable.focus()).get('values')[2])
     eln.grid(row=3, column=1, pady=10, padx=20)
-    eemail = tk.Entry(ue, width=30, bg=white)
+    eemail = tk.Entry(empludtpu, width=30, bg=white)
     eemail.insert(0, employeetable.item(employeetable.focus()).get('values')[3])
     # eemail.configure(state='disabled')
     eemail.grid(row=4, column=1, pady=10, padx=20)
-    ephone = tk.Entry(ue, width=30, bg=white)
+    ephone = tk.Entry(empludtpu, width=30, bg=white)
     ephone.insert(0, employeetable.item(employeetable.focus()).get('values')[4])
     ephone.grid(row=5, column=1, pady=10, padx=20)
-    ejp = tk.Entry(ue, width=30, bg=white)
+    ejp = tk.Entry(empludtpu, width=30, bg=white)
     ejp.insert(0, employeetable.item(employeetable.focus()).get('values')[7])
     ejp.grid(row=6, column=1, pady=10, padx=20)
 
-    egemailbtn = Button(ue, text="Generate email", command=lambda: gemail(),
+    egemailbtn = Button(empludtpu, text="Generate email", command=lambda: gemail(),
                         cursor='hand2')
     egemailbtn.grid(row=4, column=2, padx=10)
 
@@ -335,7 +346,7 @@ def updempl():
         data = '%s %s' % (result[0], result[1])
         sctr.append(data)
 
-    esec = ttk.Combobox(ue, values=sctr, width=27, state='readonly')
+    esec = ttk.Combobox(empludtpu, values=sctr, width=27, state='readonly')
     for s in sctr:
         if s.startswith(str(employeetable.item(employeetable.focus()).get('values')[8])):
             esec.current(sctr.index(s))
@@ -343,14 +354,15 @@ def updempl():
             pass
     esec.grid(row=7, column=1, pady=20, padx=20)
 
-    updemp = tk.Button(ue, text='Update', command=lambda: '?', height=1, width=10, font='Raleway', cursor='hand2')
+    updemp = tk.Button(empludtpu, text='Update', command=lambda: '?', height=1, width=10, font='Raleway', cursor='hand2')
     updemp.configure(bg=blue, fg=white)
     updemp.grid(row=8, column=1, pady=20, padx=20)
-    cancelemp = tk.Button(ue, text='Cancel', command=lambda: ue.destroy(), height=1, width=10, font='Raleway',
+    cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10, font='Raleway',
                           cursor='hand2')
     cancelemp.grid(row=8, column=0, pady=20, padx=20)
 
 
+# Delete the selected employee
 def deleteempl():
     try:
         selection = employeetable.item(employeetable.focus()).get('values')[0]  # Grabbing employee's unique id
@@ -363,6 +375,7 @@ def deleteempl():
         showerror('Error', 'Something went wrong\nPlease try again')
 
 
+# Create sector screen
 def load_sector():
     clear_screen(homescreen)
     sector.tkraise()
@@ -390,9 +403,6 @@ def load_sector():
 
     sectortable.tag_configure('even', background='silver')
     sectortable.tag_configure('odd', background=white)
-
-    # spacer = tk.Label(sector, bg=darkgrey, fg=white, padx=200, pady=25)
-    # spacer.grid(row=0, column=0)
 
     counter = 0
 
@@ -423,6 +433,7 @@ def load_sector():
     secback.grid(row=4, column=0, pady=345, padx=20)
 
 
+# Delete the selected sector
 def deletesec():
     try:
         selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
@@ -436,26 +447,26 @@ def deletesec():
 
 
 def insec():
-    global insert, secnameentry
-    insert = Toplevel()
-    insert.title('AAS - Add new sector')
-    insert.iconbitmap(r'assets/facivon_bl.ico')
-    insert.focus_force()
-    insert.tkraise()
-    insert.configure(background=darkgrey)
-    insert.pack_propagate(False)
-    insert.geometry('350x200+' + str(height+175) + '+' + str(width+125))
-    insert.resizable(False, False)
-    secnamelbl = tk.Label(insert, text='New sector\'s name:', bg=darkgrey, fg=white)
+    global sctrinsrtpu, secnameentry
+    sctrinsrtpu = Toplevel()
+    sctrinsrtpu.title('AAS - Add new sector')
+    sctrinsrtpu.iconbitmap(r'assets/facivon_bl.ico')
+    sctrinsrtpu.focus_force()
+    sctrinsrtpu.tkraise()
+    sctrinsrtpu.configure(background=darkgrey)
+    sctrinsrtpu.pack_propagate(False)
+    sctrinsrtpu.geometry('350x200+' + str(height+175) + '+' + str(width+125))
+    sctrinsrtpu.resizable(False, False)
+    secnamelbl = tk.Label(sctrinsrtpu, text='New sector\'s name:', bg=darkgrey, fg=white)
     secnamelbl.grid(row=0, column=0, pady=20, padx=10)
-    secnameentry = tk.Entry(insert, width=30)
+    secnameentry = tk.Entry(sctrinsrtpu, width=30)
     secnameentry.grid(row=0, column=1, pady=20, padx=8)
     secnameentry.focus()
-    addsector = tk.Button(insert, text='Add sector', command=lambda: insertsec(), height=1,
+    addsector = tk.Button(sctrinsrtpu, text='Add sector', command=lambda: insertsec(), height=1,
                           width=10, font='Raleway', cursor='hand2')
     addsector.configure(bg=blue, fg=white)
     addsector.grid(row=1, column=1, pady=20, padx=20)
-    cancelsector = tk.Button(insert, text='Cancel', command=lambda: insert.destroy(), height=1,
+    cancelsector = tk.Button(sctrinsrtpu, text='Cancel', command=lambda: sctrinsrtpu.destroy(), height=1,
                              width=10, font='Raleway', cursor='hand2')
     cancelsector.grid(row=1, column=0, pady=20, padx=15)
 
@@ -465,35 +476,35 @@ def insertsec():
         try:
             databasefile.insertsector(secnameentry.get())
             showinfo('Info', 'New sector has been inserted succesfully')
-            insert.destroy()
+            sctrinsrtpu.destroy()
             load_sector()
         except:
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
         showerror('Error', 'Please make sure you add a sector name and try again')
 
-
+# Create sector's update pop up
 def updtsec():
-    global u, secnameup
-    u = Toplevel()
-    u.title('AAS - Update sector')
-    u.iconbitmap(r'assets/facivon_bl.ico')
-    u.focus_force()
-    u.tkraise()
-    u.configure(background=darkgrey)
-    u.pack_propagate(False)
-    u.geometry('350x200+' + str(height + 175) + '+' + str(width + 125))
-    u.resizable(False, False)
-    secnamelbl = tk.Label(u, text='New sector\'s name:', bg=darkgrey, fg=white)
+    global sctrupdtpu, secnameup
+    sctrupdtpu = Toplevel()
+    sctrupdtpu.title('AAS - Update sector')
+    sctrupdtpu.iconbitmap(r'assets/facivon_bl.ico')
+    sctrupdtpu.focus_force()
+    sctrupdtpu.tkraise()
+    sctrupdtpu.configure(background=darkgrey)
+    sctrupdtpu.pack_propagate(False)
+    sctrupdtpu.geometry('350x200+' + str(height + 175) + '+' + str(width + 125))
+    sctrupdtpu.resizable(False, False)
+    secnamelbl = tk.Label(sctrupdtpu, text='New sector\'s name:', bg=darkgrey, fg=white)
     secnamelbl.grid(row=0, column=0, pady=20, padx=10)
-    secnameup = tk.Entry(u, width=30)
+    secnameup = tk.Entry(sctrupdtpu, width=30)
     secnameup.grid(row=0, column=1, pady=20, padx=8)
     secnameup.focus()
-    updtsector = tk.Button(u, text='Update', command=lambda: updatesector(), height=1, width=10,
+    updtsector = tk.Button(sctrupdtpu, text='Update', command=lambda: updatesector(), height=1, width=10,
                            font='Raleway', cursor='hand2')
     updtsector.configure(bg=blue, fg=white)
     updtsector.grid(row=1, column=1, pady=20, padx=20)
-    cancelsector = tk.Button(u, text='Cancel', command=lambda: u.destroy(), height=1,
+    cancelsector = tk.Button(sctrupdtpu, text='Cancel', command=lambda: sctrupdtpu.destroy(), height=1,
                              width=10, font='Raleway', cursor='hand2')
     cancelsector.grid(row=1, column=0, pady=20, padx=15)
 
@@ -504,7 +515,7 @@ def updatesector():
             selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
             databasefile.updatesector(selection, secnameup.get())
             showinfo('Info', 'Sector has been updated succesfully')
-            u.destroy()
+            sctrupdtpu.destroy()
             load_sector()
         except:
             showerror('Error', 'Something went wrong\nPlease try again')
@@ -512,7 +523,7 @@ def updatesector():
         showerror('Error', 'Please make sure you add a sector name and try again')
 
 
-# Start applicadtionaq
+# Start application
 load_homescreen()
 
 base.mainloop()

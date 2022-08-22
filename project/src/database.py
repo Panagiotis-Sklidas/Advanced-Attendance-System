@@ -2,6 +2,7 @@ import os
 import sqlite3
 from os import *
 
+# Database functions for creating, reading, updating, deleting (CRUD) sectors and employees
 
 def createdb():
     if path.exists('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db'):
