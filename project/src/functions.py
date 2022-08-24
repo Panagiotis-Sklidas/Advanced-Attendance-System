@@ -3,6 +3,7 @@ from smartcard.util import toHexString
 import cv2
 import numpy as np
 from database import *
+from PIL import Image, ImageTk
 
 
 def createfilepath():
@@ -76,16 +77,16 @@ def generateemail(firstname: str, lastname: str):
     return email
 
 
-def faceimage():
-    cap = cv2.VideoCapture(0)
-
-    while True:
-        ret, frame = cap.read()
-
-        cv2.imshow('Camera', frame)
-
-        if cv2.waitKey(1) == 13:  # watch every 1ms if enter has been pressed
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+# def faceimage():
+#     cap = cv2.VideoCapture(0)
+#
+#     while True:
+#         ret, frame = cap.read()
+#
+#         cv2.imshow('Camera', frame)
+#
+#         if cv2.waitKey(1) == 13:  # watch every 1ms if enter has been pressed
+#             break
+#
+#     cap.release()
+#     cv2.destroyAllWindows()
