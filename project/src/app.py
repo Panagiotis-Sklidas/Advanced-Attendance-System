@@ -1,7 +1,7 @@
 # import sys
 # import os
-# import cv2
 # import employee
+import cv2
 import tkinter as tk
 import sqlite3
 from tkinter import *
@@ -71,8 +71,8 @@ def load_homescreen():
     signupbtn = Button(homescreen, text="Sign up", command=lambda: load_signup(), height=2, width=10, font='Raleway',
                        cursor='hand2')
     signupbtn.grid(row=2, column=1, pady=45)
-    signinbtn = Button(homescreen, text="Sign in", command=lambda: load_signin(), bg=blue, fg='#dedede', height=2,
-                       width=10, font='Raleway', cursor='hand2')
+    signinbtn = Button(homescreen, text="Sign in", command=lambda: load_signin(), bg=blue, fg=white, height=2,
+                       width=10, font='Raleway', cursor='hand2', activeforeground=white, activebackground=blue)
     signinbtn.grid(row=2, column=2, pady=45)
 
 
@@ -141,7 +141,7 @@ def load_signup():
     cidbtn.grid(row=1, column=3, padx=10)
     gemailbtn = Button(signup, text="Generate email", command=lambda: gemail(), cursor='hand2')
     gemailbtn.grid(row=4, column=3, padx=10)
-    photobtn = Button(signup, text="Capture face image", command=lambda: functionsfile.faceimage(), font='Raleway',
+    photobtn = Button(signup, text="Capture face image", command=lambda: takephoto(), font='Raleway',
                       cursor='hand2')
     photobtn.grid(row=10, column=1, columnspan=2)
 
@@ -153,13 +153,37 @@ def load_signup():
     acceptbtn.grid(row=11, column=2, pady=50, padx=20)
 
 
+def takephoto():
+    global photoboothlbl, camera
+    photobooth = Toplevel()
+    photobooth.title('AAS - Take picture')
+    photobooth.geometry('644x525')
+    photoboothlbl = tk.Label(photobooth)
+    photoboothlbl.grid(row=0, column=0)
+    camera = cv2.VideoCapture(0)
+    # functionsfile.show_frames(photoboothlbl, camera)
+    show_frames()
+
+    captureimage = tk.Button(photobooth, text='Capture')
+    captureimage.grid(row=1, column=0)
+
+
+def show_frames():
+    cv2image = cv2.cvtColor(camera.read()[1], cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(cv2image)
+    videofeed = ImageTk.PhotoImage(image=img)
+    photoboothlbl.imgtk = videofeed
+    photoboothlbl.configure(image=videofeed)
+    photoboothlbl.after(20, show_frames)
+
+
 # Tries to read the card's uid and display it on screen
 def cuid():
     cid.configure(state='normal')
     cid.delete(0, END)
     try:
-        id = functionsfile.readuid()
-        cid.insert(0, id)
+        cardid = functionsfile.readuid()
+        cid.insert(0, cardid)
         cid.configure(state='disabled')
     except:
         showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
@@ -177,7 +201,7 @@ def gemail():
         showerror('Error', 'Make sure that you have filled your first and last name and try again')
 
 
- # Performing the neccesery checks before attempting to insert employee to db
+# Performing the neccesery checks before attempting to insert employee to db
 def accept():
     isadult = int(jd.get().split('-')[0]) - int(dob.get().split('-')[0])
 
@@ -257,10 +281,10 @@ def load_employees():
     employeetable.heading("ln", text="Last Name", anchor=W)
     employeetable.heading("em", text="Email", anchor=W)
     employeetable.heading("ph", text="Phone", anchor=W)
-    employeetable.heading("dob", text="Date of Birth",  anchor=W)
+    employeetable.heading("dob", text="Date of Birth", anchor=W)
     employeetable.heading("jd", text="Joined Date", anchor=W)
     employeetable.heading("jp", text="Position", anchor=W)
-    employeetable.heading("sid", text="Sector ID",  anchor=W)
+    employeetable.heading("sid", text="Sector ID", anchor=W)
     employeetable.tag_configure('even', background='silver')
     employeetable.tag_configure('odd', background=white)
 
@@ -270,7 +294,7 @@ def load_employees():
     for i in range(0, len(res)):
         result = res[i]
         if counter % 2 == 0:
-            employeetable.insert(parent='', index='end', iid=i, values=result, tags=('even', ))
+            employeetable.insert(parent='', index='end', iid=i, values=result, tags=('even',))
         else:
             employeetable.insert(parent='', index='end', iid=i, values=result, tags=('odd',))
         counter += 1
@@ -356,10 +380,12 @@ def updempl():
             pass
     esec.grid(row=7, column=1, pady=20, padx=20)
 
-    updemp = tk.Button(empludtpu, text='Update', command=lambda: '?', height=1, width=10, font='Raleway', cursor='hand2')
+    updemp = tk.Button(empludtpu, text='Update', command=lambda: '?', height=1, width=10, font='Raleway',
+                       cursor='hand2')
     updemp.configure(bg=blue, fg=white)
     updemp.grid(row=8, column=1, pady=20, padx=20)
-    cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10, font='Raleway',
+    cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10,
+                          font='Raleway',
                           cursor='hand2')
     cancelemp.grid(row=8, column=0, pady=20, padx=20)
 
@@ -412,7 +438,7 @@ def load_sector():
     for i in range(0, len(res)):
         result = res[i]
         if counter % 2 == 0:
-            sectortable.insert(parent='', index='end', iid=i, values=result, tags=('even', ))
+            sectortable.insert(parent='', index='end', iid=i, values=result, tags=('even',))
         else:
             sectortable.insert(parent='', index='end', iid=i, values=result, tags=('odd',))
         counter += 1
@@ -457,7 +483,7 @@ def insec():
     sctrinsrtpu.tkraise()
     sctrinsrtpu.configure(background=darkgrey)
     sctrinsrtpu.pack_propagate(False)
-    sctrinsrtpu.geometry('350x200+' + str(height+175) + '+' + str(width+125))
+    sctrinsrtpu.geometry('350x200+' + str(height + 175) + '+' + str(width + 125))
     sctrinsrtpu.resizable(False, False)
     secnamelbl = tk.Label(sctrinsrtpu, text='New sector\'s name:', bg=darkgrey, fg=white)
     secnamelbl.grid(row=0, column=0, pady=20, padx=10)
@@ -484,6 +510,7 @@ def insertsec():
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
         showerror('Error', 'Please make sure you add a sector name and try again')
+
 
 # Create sector's update pop up
 def updtsec():
