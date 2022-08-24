@@ -5,16 +5,27 @@ import numpy as np
 from database import *
 
 
-# Checks if there is the program folder in c drive, otherwise creates it
 def createfilepath():
+    """
+    Check if the program folder exists on the c drive
+
+    Ιf it doesn't exist then it creates it
+    :return:
+    """
     if os.path.exists('C:/AdvancedAttendanceSystem'):
         pass
     else:
         os.makedirs('C:/AdvancedAttendanceSystem')
 
 
-# Firstly checks if an RFID reader is connected and then trys to read the uid from the card
 def readuid():
+    """
+    Read RFID/NFC card's uid
+
+    First checks if an RFID reader is connected and opens a connection,
+    creates the read command and then transmitting it to the reader
+    :return: RFID/NFC card's uid
+    """
     r = readers()
     if len(r) < 1:
         print('No readers available')
@@ -29,7 +40,7 @@ def readuid():
     if type(command) == list:
         data, sw1, sw2 = connection.transmit(command)
         carduid = str(toHexString(data)).replace(' ', '')  # Remove spaces and convert from hex to string
-        print('Card uid: ', carduid)
+        # print('Card uid: ', carduid)
         if (sw1, sw2) == (0x90, 0x0):
             print('Status: The operation completed successfully.')
         elif (sw1, sw2) == (0x63, 0x0):
@@ -41,6 +52,16 @@ def readuid():
 # A function that creates business email using first and last name
 # Also checks if the generated email has already been taken and if this is true then adds an extra random letter
 def generateemail(firstname: str, lastname: str):
+    """
+    Generate business email
+
+    After generating the 7 chars long email makes a request to the database and checks if this email has already been
+    given to another employee and if this is true then adds a random extra letter
+
+    :param firstname: str
+    :param lastname: str
+    :return: email
+    """
     email = firstname.lower()[:2] + lastname.lower()[:5] + '@company.com'
     res = selectemployeebyemail(email)  # Search if there is a user with the same email
     if res != []:

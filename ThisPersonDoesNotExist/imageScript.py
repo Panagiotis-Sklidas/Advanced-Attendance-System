@@ -11,6 +11,11 @@ chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', '
 
 # Returns random 8 char long name for the image
 def createname():
+    """
+    Create random 8 chars long name for the download image
+
+    :return: filename: str
+    """
     filename = ''
     for i in range(0, 8):
         filename += chars[np.random.randint(0, 35)]
@@ -18,9 +23,15 @@ def createname():
 
 
 def acquirefaceimages():
+    """
+    Download n images from thispersondoesnotexist.com
+
+    Makes a download request for the face image that has been return by the website
+    :return:
+    """
     rng = int(input('How many face images to you need from \"thispersondoesnotexist.com\"? '))
     start = datetime.now()
-# Downloading images from thispersondoesnotexist.com
+    # Downloading images from thispersondoesnotexist.com
     for i in range(0, rng):
         filename = createname() + '.jpg'
         req = urllib.request.build_opener()

@@ -141,7 +141,8 @@ def load_signup():
     cidbtn.grid(row=1, column=3, padx=10)
     gemailbtn = Button(signup, text="Generate email", command=lambda: gemail(), cursor='hand2')
     gemailbtn.grid(row=4, column=3, padx=10)
-    photobtn = Button(signup, text="Capture face image", command='?', font='Raleway', cursor='hand2')
+    photobtn = Button(signup, text="Capture face image", command=lambda: functionsfile.faceimage(), font='Raleway',
+                      cursor='hand2')
     photobtn.grid(row=10, column=1, columnspan=2)
 
     backbtn = Button(signup, text="Back", command=lambda: load_homescreen(), height=1, width=10, font='Raleway',
@@ -205,6 +206,7 @@ def accept():
             showerror('Error', 'This uid already exist\nPlease ask for a different card')
 
 
+# Create signin screen
 def load_signin():
     clear_screen(homescreen)
     signin.tkraise()
