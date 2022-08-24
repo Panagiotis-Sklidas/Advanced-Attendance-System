@@ -48,5 +48,5 @@
 SUBJECT AREA:  
 KEYWORDS: RFID/NFC, Face recognition.
 
- - [DIPAE Website](https://www.cs.ihu.gr/index.xhtml;jsessionid=Jy-71XCR7OeMGBi-uXAygMK5mHmdBjHdvOYKjV-1.javaee2?language=en)
+ - [IHU Website](https://www.cs.ihu.gr/index.xhtml;jsessionid=Jy-71XCR7OeMGBi-uXAygMK5mHmdBjHdvOYKjV-1.javaee2?language=en)
  
