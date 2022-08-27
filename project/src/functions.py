@@ -17,6 +17,7 @@ def createfilepath():
         pass
     else:
         os.makedirs('C:/AdvancedAttendanceSystem')
+        os.makedirs('C:/AdvancedAttendanceSystem/FaceImages/')
 
 
 def readuid():
