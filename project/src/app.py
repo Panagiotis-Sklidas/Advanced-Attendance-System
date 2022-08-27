@@ -1,4 +1,5 @@
-# import sys
+import sys
+import re
 # import os
 # import employee
 import cv2
@@ -106,7 +107,7 @@ def load_signup():
     lbl8.grid(row=9, column=1)
 
     # Entry fields
-    global cid, fn, ln, email, phone, dob, jd, jp, se, acceptbtn, sectors
+    global cid, fn, ln, email, phone, dob, jd, jp, se, acceptbtn, sectors, hasimage
     cid = tk.Entry(signup, width=30, bg=white)
     cid.configure(state='disabled')  # Make field read-only
     cid.grid(row=1, column=2)
@@ -135,6 +136,7 @@ def load_signup():
     se = ttk.Combobox(signup, values=sectors, width=27, state='readonly')
     se.current(0)
     se.grid(row=9, column=2)
+    hasimage = False
 
     # Buttons
     cidbtn = Button(signup, text="Get card's uid", command=lambda: cuid(), cursor='hand2')
@@ -154,27 +156,92 @@ def load_signup():
 
 
 def takephoto():
-    global photoboothlbl, camera
-    photobooth = Toplevel()
-    photobooth.title('AAS - Take picture')
-    photobooth.geometry('644x525')
-    photoboothlbl = tk.Label(photobooth)
-    photoboothlbl.grid(row=0, column=0)
-    camera = cv2.VideoCapture(0)
-    # functionsfile.show_frames(photoboothlbl, camera)
-    show_frames()
+    # Opens photo booth window showing video feed from the webcam
+    global photoboothlbl, camera, photobooth
+    hasimage = False
+    if len(cid.get()) > 0:
+        photobooth = Toplevel()
+        photobooth.title('AAS - Take picture')
+        photobooth.geometry('644x545')
+        photobooth.resizable(False, False)
+        photobooth.focus()
+        photoboothlbl = tk.Label(photobooth)
+        photoboothlbl.grid(row=0, column=0)
+        camera = cv2.VideoCapture(0)  # Create the capturing 'device'
+        show_frames()
 
-    captureimage = tk.Button(photobooth, text='Capture')
-    captureimage.grid(row=1, column=0)
+        captureimage = tk.Button(photobooth, text='Capture', command=lambda: capture())
+        captureimage.configure(background=blue, foreground=white, activebackground=blue, activeforeground=white,
+                               font='Raleway')
+        captureimage.grid(row=1, column=0, pady=10)
+    else:
+        showerror('Error', 'Please fill first the card\'s id and try again')
+
+
+def close():
+    photobooth.destroy()
+    # Release camera
+    camera.release()
+    cv2.destroyAllWindows()
 
 
 def show_frames():
+    global img
+    """
+    Pass a video frame every 20ms to the photobooth label
+
+    :return:
+    """
     cv2image = cv2.cvtColor(camera.read()[1], cv2.COLOR_BGR2RGB)
     img = Image.fromarray(cv2image)
     videofeed = ImageTk.PhotoImage(image=img)
     photoboothlbl.imgtk = videofeed
     photoboothlbl.configure(image=videofeed)
     photoboothlbl.after(20, show_frames)
+
+
+def capture():
+    # Shows a preview of the taken photo and asks if is it ok to save it
+    global imagepreview, preview
+    hasimage = False
+    preview = Toplevel()
+    preview.title('AAS - Preview picture')
+    preview.geometry('644x545')
+    preview.resizable(False, False)
+    preview.focus()
+    lblimg = tk.Label(preview)
+    lblimg.grid(row=0, column=0, columnspan=2)
+    btnimgsave = tk.Button(preview, text='Save', command=lambda: savefaceimg())
+    btnimgsave.configure(background=blue, foreground=white, activebackground=blue, activeforeground=white,
+                         font='Raleway')
+    btnimgsave.grid(row=1, column=1, pady=10)
+    btnimgcancel = tk.Button(preview, text='Try again', command=lambda: preview.destroy())
+    btnimgcancel.configure(font='Raleway')
+    btnimgcancel.grid(row=1, column=0, pady=10)
+
+    pr = ImageTk.PhotoImage(image=img)
+    lblimg.imgtk = pr
+    lblimg.configure(image=pr)
+
+
+def savefaceimg():
+    """
+    Save image
+
+    :return: True if image is saved
+    """
+    hasimage = True
+    imgpreview = img
+    if len(sys.argv) < 2:
+        imgsavepath = 'C:/AdvancedAttendanceSystem/FaceImages/' + cid.get() + '.jpg'
+    else:
+        imgsavepath = sys.argv[1]
+
+    imgpreview.save(imgsavepath)
+
+    preview.destroy()
+    close()
+    return hasimage
 
 
 # Tries to read the card's uid and display it on screen
@@ -204,15 +271,15 @@ def gemail():
 # Performing the neccesery checks before attempting to insert employee to db
 def accept():
     isadult = int(jd.get().split('-')[0]) - int(dob.get().split('-')[0])
-
     # Checks if all fields are filled and if the person is 18 years old
     if (len(cid.get()) == 0) or (len(fn.get()) == 0) or (len(ln.get()) == 0) or (len(email.get()) == 0) or \
-            (len(phone.get()) < 10) or (len(dob.get()) == 0) or (len(jd.get()) == 0) or (len(jp.get()) == 0) or \
-            (se.get() == sectors[0] or (isadult < 18)):
-        databasefile.deleteemployee(cid.get())
+            (len(phone.get()) < 10 or (re.search('[a-zA-Z]', phone.get()) is not None)) or (len(dob.get()) == 0) or \
+            (len(jd.get()) == 0) or (len(jp.get()) == 0) or (se.get() == sectors[0] or
+                                                             (isadult < 18) or (not savefaceimg())):
         showerror('Error',
-                  'Somthing went wrong:\n1) All or some values are been missing\n2) Or the employee is not old enough '
-                  '(18 years old)\nMake sure that you have check all of the above and try again')
+                  'Something went wrong:\n1) All or some values may be missing\n2) There are some letters in phone '
+                  'number\n3) The employee is not old enough (18 years old)\n4) There is not a saved face image for the'
+                  ' employee\nMake sure that you have check all of the above and try again')
     else:
         # Tries to insert umployee
         sector = se.get().split()
@@ -222,7 +289,7 @@ def accept():
         dj = dt1.strftime("%Y-%m-%d")
         try:
             databasefile.insertemployee(cid.get(), fn.get(), ln.get(), email.get(), phone.get(), db, dj, jp.get(),
-                                        sector[0])
+                                        int(sector[0]))
             useradded = tk.Label(signup, text='Added user succeeded', bg=darkgrey, fg=green, font='Raleway')
             useradded.grid(row=11, column=3)
             # userAdded.after(1500, userAdded.grid_forget())
