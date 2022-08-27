@@ -244,4 +244,7 @@ def deleteemployee(cuid: str):
     cur.execute("DELETE FROM EMPLOYEE WHERE uid=(?);", (cuid,))
     conn.commit()
     conn.close()
+
+    employeeimg = 'C:/AdvancedAttendanceSystem/FaceImages/' + cuid + '.jpg'
+    os.remove(employeeimg)
     return
