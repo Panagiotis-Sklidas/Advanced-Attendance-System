@@ -72,7 +72,7 @@ def load_homescreen():
     signupbtn = Button(homescreen, text="Sign up", command=lambda: load_signup(), height=2, width=10, font='Raleway',
                        cursor='hand2')
     signupbtn.grid(row=2, column=1, pady=45)
-    signinbtn = Button(homescreen, text="Sign in", command=lambda: load_signin(), bg=blue, fg=white, height=2,
+    signinbtn = Button(homescreen, text="Sign in", command=lambda: login(), bg=blue, fg=white, height=2,
                        width=10, font='Raleway', cursor='hand2', activeforeground=white, activebackground=blue)
     signinbtn.grid(row=2, column=2, pady=45)
 
@@ -145,7 +145,7 @@ def load_signup():
     gemailbtn.grid(row=4, column=3, padx=10)
     photobtn = Button(signup, text="Capture face image", command=lambda: takephoto(), font='Raleway',
                       cursor='hand2')
-    photobtn.grid(row=10, column=1, columnspan=2)
+    photobtn.grid(row=10, column=1, columnspan=2, pady=20)
 
     backbtn = Button(signup, text="Back", command=lambda: load_homescreen(), height=1, width=10, font='Raleway',
                      cursor='hand2')
@@ -242,9 +242,9 @@ def savefaceimg():
     preview.destroy()
     close()
     return hasimage
-
-
 # Tries to read the card's uid and display it on screen
+
+
 def cuid():
     cid.configure(state='normal')
     cid.delete(0, END)
@@ -255,9 +255,9 @@ def cuid():
     except:
         showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
                            ' and try again')
-
-
 # Tries to generate email using the function generateemail from functions.py
+
+
 def gemail():
     email.configure(state='normal')
     email.delete(0, END)
@@ -268,7 +268,15 @@ def gemail():
         showerror('Error', 'Make sure that you have filled your first and last name and try again')
 
 
+def uemail():
+    eemail.delete(0, END)
+    if (len(efn.get()) > 0) and (len(eln.get()) > 0):
+        eemail.insert(0, functionsfile.generateemail(efn.get(), eln.get()))
+    else:
+        showerror('Error', 'Make sure that you have filled your first and last name and try again')
 # Performing the neccesery checks before attempting to insert employee to db
+
+
 def accept():
     isadult = int(jd.get().split('-')[0]) - int(dob.get().split('-')[0])
     # Checks if all fields are filled and if the person is 18 years old
@@ -297,8 +305,23 @@ def accept():
             showerror('Error', 'This uid already exist\nPlease ask for a different card')
 
 
+def login():
+    # global inemployee
+    try:
+        readercarduid = functionsfile.readuid()
+        inemployee = databasefile.selectemployee(readercarduid)
+        if (inemployee is not None) and 1:
+            load_signin(inemployee)
+        else:
+            print('no employee')
+    except:
+        showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
+                           ' and try again')
+
+
 # Create signin screen
-def load_signin():
+def load_signin(inemployee):
+    print(inemployee)
     clear_screen(homescreen)
     signin.tkraise()
     signin.pack_propagate(False)
@@ -361,9 +384,9 @@ def load_employees():
     for i in range(0, len(res)):
         result = res[i]
         if counter % 2 == 0:
-            employeetable.insert(parent='', index='end', iid=i, values=result, tags=('even',))
+            employeetable.insert(parent='', index='end', iid=str(i), values=result, tags=('even',))
         else:
-            employeetable.insert(parent='', index='end', iid=i, values=result, tags=('odd',))
+            employeetable.insert(parent='', index='end', iid=str(i), values=result, tags=('odd',))
         counter += 1
     employeetable.grid(row=0, column=1, rowspan=5, sticky='new', pady=30, padx=40)
     updtempl = tk.Button(employees, text='Update Employee', command=lambda: updempl(), height=1, width=15,
@@ -376,85 +399,101 @@ def load_employees():
     dltempl.grid(row=1, column=0, pady=30, padx=20)
     backempl = tk.Button(employees, text='Back', command=lambda: load_signin(), height=1, width=15, font='Raleway',
                          cursor='hand2')
-    backempl.grid(row=3, column=0, pady=440, padx=20)
+    backempl.grid(row=3, column=0, pady=417, padx=20)
 
 
 # Creating update employee pop up
 def updempl():
-    # global empludtpu
-    empludtpu = Toplevel()
-    empludtpu.title('AAS - Update employee')
-    empludtpu.iconbitmap(r'assets/facivon_bl.ico')
-    empludtpu.focus_force()
-    empludtpu.tkraise()
-    empludtpu.configure(background=darkgrey)
-    empludtpu.pack_propagate(False)
-    empludtpu.geometry('500x500')
-    empludtpu.resizable(False, False)
+    if employeetable.focus() != "":
+        global empludtpu
+        empludtpu = Toplevel()
+        empludtpu.title('AAS - Update employee')
+        empludtpu.iconbitmap(r'assets/facivon_bl.ico')
+        empludtpu.focus_force()
+        empludtpu.tkraise()
+        empludtpu.configure(background=darkgrey)
+        empludtpu.pack_propagate(False)
+        empludtpu.geometry('500x500')
+        empludtpu.resizable(False, False)
 
-    lbl = tk.Label(empludtpu, text='UID:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl.grid(row=1, column=0, pady=10, padx=20)
-    lbl1 = tk.Label(empludtpu, text='First name:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl1.grid(row=2, column=0, pady=10, padx=20)
-    lbl2 = tk.Label(empludtpu, text='Last name:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl2.grid(row=3, column=0, pady=10, padx=20)
-    lbl3 = tk.Label(empludtpu, text='Email:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl3.grid(row=4, column=0, pady=10, padx=20)
-    lbl4 = tk.Label(empludtpu, text='Phone:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl4.grid(row=5, column=0, pady=10, padx=20)
-    lbl5 = tk.Label(empludtpu, text='Job position:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl5.grid(row=6, column=0, pady=10, padx=20)
-    lbl6 = tk.Label(empludtpu, text='Sector:', bg=darkgrey, fg=white, padx=10, pady=10)
-    lbl6.grid(row=7, column=0, pady=10, padx=20)
+        lbl = tk.Label(empludtpu, text='UID:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl.grid(row=1, column=0, pady=10, padx=20)
+        lbl1 = tk.Label(empludtpu, text='First name:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl1.grid(row=2, column=0, pady=10, padx=20)
+        lbl2 = tk.Label(empludtpu, text='Last name:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl2.grid(row=3, column=0, pady=10, padx=20)
+        lbl3 = tk.Label(empludtpu, text='Email:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl3.grid(row=4, column=0, pady=10, padx=20)
+        lbl4 = tk.Label(empludtpu, text='Phone:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl4.grid(row=5, column=0, pady=10, padx=20)
+        lbl5 = tk.Label(empludtpu, text='Job position:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl5.grid(row=6, column=0, pady=10, padx=20)
+        lbl6 = tk.Label(empludtpu, text='Sector:', bg=darkgrey, fg=white, padx=10, pady=10)
+        lbl6.grid(row=7, column=0, pady=10, padx=20)
 
-    # Filling the entrys with employees data
-    eid = tk.Entry(empludtpu, width=30, bg=white)
-    eid.insert(0, employeetable.item(employeetable.focus()).get('values')[0])
-    eid.configure(state='disabled')  # Make field read-only
-    eid.grid(row=1, column=1, pady=10, padx=20)
-    efn = tk.Entry(empludtpu, width=30, bg=white)
-    efn.insert(0, employeetable.item(employeetable.focus()).get('values')[1])
-    efn.grid(row=2, column=1, pady=10, padx=20)
-    eln = tk.Entry(empludtpu, width=30, bg=white)
-    eln.insert(0, employeetable.item(employeetable.focus()).get('values')[2])
-    eln.grid(row=3, column=1, pady=10, padx=20)
-    eemail = tk.Entry(empludtpu, width=30, bg=white)
-    eemail.insert(0, employeetable.item(employeetable.focus()).get('values')[3])
-    # eemail.configure(state='disabled')
-    eemail.grid(row=4, column=1, pady=10, padx=20)
-    ephone = tk.Entry(empludtpu, width=30, bg=white)
-    ephone.insert(0, employeetable.item(employeetable.focus()).get('values')[4])
-    ephone.grid(row=5, column=1, pady=10, padx=20)
-    ejp = tk.Entry(empludtpu, width=30, bg=white)
-    ejp.insert(0, employeetable.item(employeetable.focus()).get('values')[7])
-    ejp.grid(row=6, column=1, pady=10, padx=20)
+        # Filling the entrys with employees data
+        global eid, efn, eln, eemail, ephone, ejp, esec
+        eid = tk.Entry(empludtpu, width=30, bg=white)
+        eid.insert(0, employeetable.item(employeetable.focus()).get('values')[0])
+        eid.configure(state='disabled')  # Make field read-only
+        eid.grid(row=1, column=1, pady=10, padx=20)
+        efn = tk.Entry(empludtpu, width=30, bg=white)
+        efn.insert(0, employeetable.item(employeetable.focus()).get('values')[1])
+        efn.grid(row=2, column=1, pady=10, padx=20)
+        eln = tk.Entry(empludtpu, width=30, bg=white)
+        eln.insert(0, employeetable.item(employeetable.focus()).get('values')[2])
+        eln.grid(row=3, column=1, pady=10, padx=20)
+        eemail = tk.Entry(empludtpu, width=30, bg=white)
+        eemail.insert(0, employeetable.item(employeetable.focus()).get('values')[3])
+        # eemail.configure(state='disabled')
+        eemail.grid(row=4, column=1, pady=10, padx=20)
+        ephone = tk.Entry(empludtpu, width=30, bg=white)
+        ephone.insert(0, employeetable.item(employeetable.focus()).get('values')[4])
+        ephone.grid(row=5, column=1, pady=10, padx=20)
+        ejp = tk.Entry(empludtpu, width=30, bg=white)
+        ejp.insert(0, employeetable.item(employeetable.focus()).get('values')[7])
+        ejp.grid(row=6, column=1, pady=10, padx=20)
 
-    egemailbtn = Button(empludtpu, text="Generate email", command=lambda: gemail(),
-                        cursor='hand2')
-    egemailbtn.grid(row=4, column=2, padx=10)
+        egemailbtn = Button(empludtpu, text="Generate email",
+                            command=lambda: uemail(), cursor='hand2')
+        egemailbtn.grid(row=4, column=2, padx=10)
 
-    sctr = []
-    results = databasefile.fetchsectors()
-    for result in results:
-        data = '%s %s' % (result[0], result[1])
-        sctr.append(data)
+        sctr = []
+        results = databasefile.fetchsectors()
+        for result in results:
+            data = '%s %s' % (result[0], result[1])
+            sctr.append(data)
 
-    esec = ttk.Combobox(empludtpu, values=sctr, width=27, state='readonly')
-    for s in sctr:
-        if s.startswith(str(employeetable.item(employeetable.focus()).get('values')[8])):
-            esec.current(sctr.index(s))
-        else:
-            pass
-    esec.grid(row=7, column=1, pady=20, padx=20)
+        esec = ttk.Combobox(empludtpu, values=sctr, width=27, state='readonly')
+        for s in sctr:
+            if s.startswith(str(employeetable.item(employeetable.focus()).get('values')[8])):
+                esec.current(sctr.index(s))
+            else:
+                pass
+        esec.grid(row=7, column=1, pady=20, padx=20)
 
-    updemp = tk.Button(empludtpu, text='Update', command=lambda: '?', height=1, width=10, font='Raleway',
-                       cursor='hand2')
-    updemp.configure(bg=blue, fg=white)
-    updemp.grid(row=8, column=1, pady=20, padx=20)
-    cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10,
-                          font='Raleway',
-                          cursor='hand2')
-    cancelemp.grid(row=8, column=0, pady=20, padx=20)
+        updemp = tk.Button(empludtpu, text='Update',
+                           command=lambda: employeeupdate(), height=1, width=10, font='Raleway', cursor='hand2')
+        updemp.configure(bg=blue, fg=white, activebackground=blue, activeforeground=white)
+        updemp.grid(row=8, column=1, pady=20, padx=20)
+        cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10,
+                              font='Raleway', cursor='hand2')
+        cancelemp.grid(row=8, column=0, pady=20, padx=20)
+    else:
+        showerror('Error', 'Select the employee you want to edit and try again')
+
+
+def employeeupdate():
+    try:
+        databasefile.updateemployee(eid.get(), efn.get(), eln.get(), eemail.get(), ephone.get(), ejp.get(),
+                                    esec.get().split()[0]),
+        load_employees()
+        empludtpu.destroy()
+    except sqlite3.Error:
+        showerror('Error', 'There are employees working in this sector\n'
+                           'Delete or move them to another sector and try again')
+    except:
+        showerror('Error', 'Something went wrong\nPlease try again')
 
 
 # Delete the selected employee
@@ -464,8 +503,7 @@ def deleteempl():
         databasefile.deleteemployee(selection)
         load_employees()
     except sqlite3.Error:
-        showerror('Error', 'There are employees working in this sector\n'
-                           'Delete or move them to another sector and try again')
+        showerror('Error', 'Something went wrong try again')
     except:
         showerror('Error', 'Something went wrong\nPlease try again')
 
@@ -477,7 +515,7 @@ def load_sector():
     sector.pack_propagate(False)
 
     # Create table to show the data
-    global sectortable
+    global sectortable  # , sctridentry
     style = ttk.Style()
     style.configure('Treeview',
                     background=white,
@@ -505,9 +543,9 @@ def load_sector():
     for i in range(0, len(res)):
         result = res[i]
         if counter % 2 == 0:
-            sectortable.insert(parent='', index='end', iid=i, values=result, tags=('even',))
+            sectortable.insert(parent='', index='end', iid=str(i), values=result, tags=('even',))
         else:
-            sectortable.insert(parent='', index='end', iid=i, values=result, tags=('odd',))
+            sectortable.insert(parent='', index='end', iid=str(i), values=result, tags=('odd',))
         counter += 1
     sectortable.grid(row=1, column=1, rowspan=4, sticky='new', pady=30, padx=40)
 
@@ -523,13 +561,23 @@ def load_sector():
                        cursor='hand2')
     dltsec.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltsec.grid(row=3, column=0, pady=30, padx=20)
+
+    # sctridlbl = tk.Label(sector, text='Sector Id', bg=darkgrey, fg=white)
+    # sctridlbl.grid(row=4, column=0, pady=20, padx=20)
+    #
+    # sctridentry = tk.Entry(sector, width=30, bg=white)
+    # sctridentry.grid(row=5, column=0, padx=20)
+
     secback = tk.Button(sector, text='Back', command=lambda: load_signin(), height=1, width=13, font='Raleway',
                         cursor='hand2')
-    secback.grid(row=4, column=0, pady=345, padx=20)
+    secback.grid(row=4, column=0, pady=320, padx=20)
 
 
 # Delete the selected sector
 def deletesec():
+    # if (len(sctridentry.get()) == 0) and (sectortable.focus() == ""):
+    #     showerror('Error', 'Something went wrong\nPlease try again')
+    # else if
     try:
         selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
         databasefile.deletesector(int(selection))
@@ -582,27 +630,30 @@ def insertsec():
 # Create sector's update pop up
 def updtsec():
     global sctrupdtpu, secnameup
-    sctrupdtpu = Toplevel()
-    sctrupdtpu.title('AAS - Update sector')
-    sctrupdtpu.iconbitmap(r'assets/facivon_bl.ico')
-    sctrupdtpu.focus_force()
-    sctrupdtpu.tkraise()
-    sctrupdtpu.configure(background=darkgrey)
-    sctrupdtpu.pack_propagate(False)
-    sctrupdtpu.geometry('350x200+' + str(height + 175) + '+' + str(width + 125))
-    sctrupdtpu.resizable(False, False)
-    secnamelbl = tk.Label(sctrupdtpu, text='New sector\'s name:', bg=darkgrey, fg=white)
-    secnamelbl.grid(row=0, column=0, pady=20, padx=10)
-    secnameup = tk.Entry(sctrupdtpu, width=30)
-    secnameup.grid(row=0, column=1, pady=20, padx=8)
-    secnameup.focus()
-    updtsector = tk.Button(sctrupdtpu, text='Update', command=lambda: updatesector(), height=1, width=10,
-                           font='Raleway', cursor='hand2')
-    updtsector.configure(bg=blue, fg=white)
-    updtsector.grid(row=1, column=1, pady=20, padx=20)
-    cancelsector = tk.Button(sctrupdtpu, text='Cancel', command=lambda: sctrupdtpu.destroy(), height=1,
-                             width=10, font='Raleway', cursor='hand2')
-    cancelsector.grid(row=1, column=0, pady=20, padx=15)
+    if sectortable.focus() != "":
+        sctrupdtpu = Toplevel()
+        sctrupdtpu.title('AAS - Update sector')
+        sctrupdtpu.iconbitmap(r'assets/facivon_bl.ico')
+        sctrupdtpu.focus_force()
+        sctrupdtpu.tkraise()
+        sctrupdtpu.configure(background=darkgrey)
+        sctrupdtpu.pack_propagate(False)
+        sctrupdtpu.geometry('350x200+' + str(height + 175) + '+' + str(width + 125))
+        sctrupdtpu.resizable(False, False)
+        secnamelbl = tk.Label(sctrupdtpu, text='New sector\'s name:', bg=darkgrey, fg=white)
+        secnamelbl.grid(row=0, column=0, pady=20, padx=10)
+        secnameup = tk.Entry(sctrupdtpu, width=30)
+        secnameup.grid(row=0, column=1, pady=20, padx=8)
+        secnameup.focus()
+        updtsector = tk.Button(sctrupdtpu, text='Update', command=lambda: updatesector(), height=1, width=10,
+                               font='Raleway', cursor='hand2')
+        updtsector.configure(bg=blue, fg=white)
+        updtsector.grid(row=1, column=1, pady=20, padx=20)
+        cancelsector = tk.Button(sctrupdtpu, text='Cancel', command=lambda: sctrupdtpu.destroy(), height=1,
+                                 width=10, font='Raleway', cursor='hand2')
+        cancelsector.grid(row=1, column=0, pady=20, padx=15)
+    else:
+        showerror('Error', 'Select a sector first and then try again')
 
 
 def updatesector():
