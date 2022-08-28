@@ -3,6 +3,7 @@ import urllib.request
 from datetime import datetime
 import time
 import numpy as np
+import cv2
 
 
 chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
@@ -46,4 +47,12 @@ def acquirefaceimages():
     print('\nDownloading', rng, 'images took', datetime.now() - start)
 
 
+def load_images():
+    loadimg = cv2.imread('C:/AdvancedAttendanceSystem/FaceImages/7R450EVX.jpg', cv2.IMREAD_COLOR)
+    loadimg = cv2.resize(loadimg, (0, 0), fx=0.5, fy=0.5)
+
+    cv2.imwrite('C:/AdvancedAttendanceSystem/FaceImages/7R450EVX.jpg', loadimg)
+
+
 acquirefaceimages()
+# load_images()
