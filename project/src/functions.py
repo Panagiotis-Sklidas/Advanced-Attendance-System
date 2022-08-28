@@ -44,7 +44,8 @@ def readuid():
         carduid = str(toHexString(data)).replace(' ', '')  # Remove spaces and convert from hex to string
         # print('Card uid: ', carduid)
         if (sw1, sw2) == (0x90, 0x0):
-            print('Status: The operation completed successfully.')
+            # print('Status: The operation completed successfully.')
+            pass
         elif (sw1, sw2) == (0x63, 0x0):
             print('Status: The operation failed.')
 
