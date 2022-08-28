@@ -13,4 +13,4 @@ class Employee:
         self.dob = dob
         self.joineddate = joineddate
         self.position = position
-        self.sectorid: sectorid
+        self.sectorid = sectorid
