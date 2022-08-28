@@ -11,7 +11,7 @@ def createdb():
     :return:
     """
     if path.exists('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db'):
-        print('DB already exists')
+        # print('DB already exists')
         pass
     else:
         print('Create DB')
