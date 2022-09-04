@@ -1,3 +1,4 @@
+import face_recognition
 from smartcard.System import readers
 from smartcard.util import toHexString
 import cv2
@@ -92,3 +93,14 @@ def generateemail(firstname: str, lastname: str):
 #
 #     cap.release()
 #     cv2.destroyAllWindows()
+
+def encodefaces():
+    global encodedimages
+    encodedimages = {}
+    for dirpath, dnames, fnames in os.walk('C:/AdvancedAttendanceSystem/FaceImages/'):
+        for f in fnames:
+            if f.endswith('.jpg'):
+                faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + f)
+                encoding = face_recognition.face_encodings(faceimage)[0]
+                encodedimages[f.split(".")[0]] = encoding
+    return encodedimages
