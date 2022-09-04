@@ -1,7 +1,7 @@
 import sys
 import re
 # import os
-# import employee
+import employee
 import cv2
 import tkinter as tk
 import sqlite3
@@ -12,6 +12,7 @@ from PIL import ImageTk, Image
 from tkcalendar import DateEntry
 import database as databasefile
 import functions as functionsfile
+import face_recognition
 
 # Initialize app
 functionsfile.createfilepath()
@@ -310,7 +311,7 @@ def login():
     try:
         readercarduid = functionsfile.readuid()
         inemployee = databasefile.selectemployee(readercarduid)
-        if (inemployee is not None) and 1:
+        if (inemployee is not None):
             load_signin(inemployee)
         else:
             print('no employee')
@@ -321,16 +322,23 @@ def login():
 
 # Create signin screen
 def load_signin(inemployee):
-    print(inemployee)
     clear_screen(homescreen)
     signin.tkraise()
     signin.pack_propagate(False)
-    hrbtn = tk.Button(signin, text='HR', command=lambda: load_employees())
-    hrbtn.grid(row=0, column=2, pady=50, padx=20)
-    sectorbtn = tk.Button(signin, text='SECTORS', command=lambda: load_sector())
-    sectorbtn.grid(row=1, column=2, pady=50, padx=20)
-    backbtn = tk.Button(signin, text='BACK', command=lambda: load_homescreen())
-    backbtn.grid(row=2, column=2, pady=50, padx=20)
+
+    lbl = tk.Label(signin, text=inemployee[1] + ' ' + inemployee[2])
+    lbl.grid(row=3, column=0)
+
+    if inemployee[8] == 1:
+        hrbtn = tk.Button(signin, text='HR', command=lambda: load_employees())
+        hrbtn.grid(row=0, column=2, pady=50, padx=20)
+        sectorbtn = tk.Button(signin, text='SECTORS', command=lambda: load_sector())
+        sectorbtn.grid(row=1, column=2, pady=50, padx=20)
+        backbtn = tk.Button(signin, text='BACK', command=lambda: load_homescreen())
+        backbtn.grid(row=2, column=2, pady=50, padx=20)
+    else:
+        backbtn = tk.Button(signin, text='BACK', command=lambda: load_homescreen())
+        backbtn.grid(row=2, column=2, pady=50, padx=20)
 
 
 # Create employee screen
