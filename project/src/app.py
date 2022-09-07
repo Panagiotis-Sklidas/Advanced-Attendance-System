@@ -173,7 +173,7 @@ def takephoto():
 
         captureimage = tk.Button(photobooth, text='Capture', command=lambda: capture())
         captureimage.configure(background=blue, foreground=white, activebackground=blue, activeforeground=white,
-                               font='Raleway')
+                               font='Raleway', cursor='hand2')
         captureimage.grid(row=1, column=0, pady=10)
     else:
         showerror('Error', 'Please fill first the card\'s id and try again')
@@ -203,7 +203,7 @@ def show_frames():
 
 def capture():
     # Shows a preview of the taken photo and asks if is it ok to save it
-    global imagepreview, preview
+    global preview
     hasimage = False
     preview = Toplevel()
     preview.title('AAS - Preview picture')
@@ -214,10 +214,10 @@ def capture():
     lblimg.grid(row=0, column=0, columnspan=2)
     btnimgsave = tk.Button(preview, text='Save', command=lambda: savefaceimg())
     btnimgsave.configure(background=blue, foreground=white, activebackground=blue, activeforeground=white,
-                         font='Raleway')
+                         font='Raleway', cursor='hand2')
     btnimgsave.grid(row=1, column=1, pady=10)
     btnimgcancel = tk.Button(preview, text='Try again', command=lambda: preview.destroy())
-    btnimgcancel.configure(font='Raleway')
+    btnimgcancel.configure(font='Raleway', cursor='hand2')
     btnimgcancel.grid(row=1, column=0, pady=10)
 
     pr = ImageTk.PhotoImage(image=img)
@@ -243,9 +243,9 @@ def savefaceimg():
     preview.destroy()
     close()
     return hasimage
+
+
 # Tries to read the card's uid and display it on screen
-
-
 def cuid():
     cid.configure(state='normal')
     cid.delete(0, END)
@@ -308,16 +308,18 @@ def accept():
 
 def login():
     # global inemployee
-    try:
-        readercarduid = functionsfile.readuid()
-        inemployee = databasefile.selectemployee(readercarduid)
-        if (inemployee is not None):
-            load_signin(inemployee)
-        else:
-            print('no employee')
-    except:
-        showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
-                           ' and try again')
+    # try:
+    #     functionsfile.f_recognition()
+    #     readercarduid = functionsfile.readuid()
+    #     inemployee = databasefile.selectemployee(readercarduid)
+    #     if (inemployee is not None):
+    #         pass
+    #     else:
+    #         print('no employee')
+    # except:
+    #     showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
+    #                        ' and try again')
+    functionsfile.f_recognition()
 
 
 # Create signin screen

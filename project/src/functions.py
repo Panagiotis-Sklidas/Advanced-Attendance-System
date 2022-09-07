@@ -94,9 +94,11 @@ def generateemail(firstname: str, lastname: str):
 #     cap.release()
 #     cv2.destroyAllWindows()
 
+encodedimages = {}
+
+
 def encodefaces():
-    global encodedimages
-    encodedimages = {}
+
     for dirpath, dnames, fnames in os.walk('C:/AdvancedAttendanceSystem/FaceImages/'):
         for f in fnames:
             if f.endswith('.jpg'):
@@ -104,3 +106,30 @@ def encodefaces():
                 encoding = face_recognition.face_encodings(faceimage)[0]
                 encodedimages[f.split(".")[0]] = encoding
     return encodedimages
+
+
+def f_recognition():
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cap.read()
+        frame_small = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        frame_small = cv2.cvtColor(frame_small, cv2.COLOR_BGR2RGB)
+
+        face_loc_frame = face_recognition.face_locations(frame_small)
+        face_encode_frame = face_recognition.face_encodings(frame_small, face_loc_frame)
+
+        for encode, location in zip(face_encode_frame, face_loc_frame):
+            matches = face_recognition.compare_faces(encodedimages, encode)
+            print('matches', matches)
+            faceDis = face_recognition.face_distance(encodedimages, encode)
+            print('dis', faceDis)
+        # if ret == True:
+
+            # cv2.imshow('Video', frame)
+            # if cv2.waitKey(1) == ord('q'):
+            #     break
+        # else:
+        #     break
+    cap.release()
+    cv2.destroyAllWindows()
