@@ -80,35 +80,23 @@ def generateemail(firstname: str, lastname: str):
     return email
 
 
-# def faceimage():
-#     cap = cv2.VideoCapture(0)
-#
-#     while True:
-#         ret, frame = cap.read()
-#
-#         cv2.imshow('Camera', frame)
-#
-#         if cv2.waitKey(1) == 13:  # watch every 1ms if enter has been pressed
-#             break
-#
-#     cap.release()
-#     cv2.destroyAllWindows()
-
-encodedimages = {}
-
-
-def encodefaces():
-
+def encodefaces(cuid):
+    encodedimages = {}
     for dirpath, dnames, fnames in os.walk('C:/AdvancedAttendanceSystem/FaceImages/'):
+        photoname = cuid + '.jpg'
         for f in fnames:
-            if f.endswith('.jpg'):
-                faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + f)
+            if f == photoname:
+                faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + photoname)
                 encoding = face_recognition.face_encodings(faceimage)[0]
                 encodedimages[f.split(".")[0]] = encoding
     return encodedimages
 
 
-def f_recognition():
+def f_recognition(cuid):
+    images = encodefaces(cuid)
+    faces = list(images.values())
+    names = list(images.keys())
+
     cap = cv2.VideoCapture(0)
 
     while True:
@@ -119,17 +107,24 @@ def f_recognition():
         face_loc_frame = face_recognition.face_locations(frame_small)
         face_encode_frame = face_recognition.face_encodings(frame_small, face_loc_frame)
 
-        for encode, location in zip(face_encode_frame, face_loc_frame):
-            matches = face_recognition.compare_faces(encodedimages, encode)
-            print('matches', matches)
-            faceDis = face_recognition.face_distance(encodedimages, encode)
-            print('dis', faceDis)
-        # if ret == True:
+        face_name = []
+        for encodedface in face_encode_frame:
+            matches = face_recognition.compare_faces(faces, encodedface)
+            name = "Unknown"
 
-            # cv2.imshow('Video', frame)
-            # if cv2.waitKey(1) == ord('q'):
-            #     break
-        # else:
-        #     break
+            fdistance = face_recognition.face_distance(faces, encodedface)
+            bestmatch = np.argmin(fdistance)
+            if matches[bestmatch]:
+                name = names[bestmatch]
+
+            face_name.append(name)
+
+        if ret:
+            cv2.imshow('Video', frame)
+            if cv2.waitKey(1000):
+                break
+
     cap.release()
     cv2.destroyAllWindows()
+
+    return name

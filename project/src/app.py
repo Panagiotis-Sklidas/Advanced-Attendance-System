@@ -307,19 +307,20 @@ def accept():
 
 
 def login():
-    # global inemployee
-    # try:
-    #     functionsfile.f_recognition()
-    #     readercarduid = functionsfile.readuid()
-    #     inemployee = databasefile.selectemployee(readercarduid)
-    #     if (inemployee is not None):
-    #         pass
-    #     else:
-    #         print('no employee')
-    # except:
-    #     showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
-    #                        ' and try again')
-    functionsfile.f_recognition()
+    global inemployee
+    try:
+        readercarduid = functionsfile.readuid()
+        cameraemployeename = functionsfile.f_recognition(readercarduid)
+        inemployee = databasefile.selectemployee(readercarduid)
+        if (inemployee is not None) and (cameraemployeename == readercarduid):
+            load_signin(inemployee)
+            print(inemployee)
+        else:
+            showinfo('Error', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to '
+                              'HR')
+    except:
+        print('no employee')
+        showerror('Error', 'Something went wrong try again')
 
 
 # Create signin screen
@@ -407,7 +408,7 @@ def load_employees():
                         cursor='hand2')
     dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltempl.grid(row=1, column=0, pady=30, padx=20)
-    backempl = tk.Button(employees, text='Back', command=lambda: load_signin(), height=1, width=15, font='Raleway',
+    backempl = tk.Button(employees, text='Back', command=lambda: load_signin(inemployee), height=1, width=15, font='Raleway',
                          cursor='hand2')
     backempl.grid(row=3, column=0, pady=417, padx=20)
 
@@ -578,7 +579,7 @@ def load_sector():
     # sctridentry = tk.Entry(sector, width=30, bg=white)
     # sctridentry.grid(row=5, column=0, padx=20)
 
-    secback = tk.Button(sector, text='Back', command=lambda: load_signin(), height=1, width=13, font='Raleway',
+    secback = tk.Button(sector, text='Back', command=lambda: load_signin(inemployee), height=1, width=13, font='Raleway',
                         cursor='hand2')
     secback.grid(row=4, column=0, pady=320, padx=20)
 
