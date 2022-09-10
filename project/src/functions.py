@@ -4,7 +4,9 @@ from smartcard.util import toHexString
 import cv2
 import numpy as np
 from database import *
-from PIL import Image, ImageTk
+import csv
+import io
+from datetime import datetime
 
 
 def createfilepath():
@@ -19,6 +21,13 @@ def createfilepath():
     else:
         os.makedirs('C:/AdvancedAttendanceSystem')
         os.makedirs('C:/AdvancedAttendanceSystem/FaceImages/')
+        try:
+            with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='w', newline='') as csvw:
+                prbo_write = csv.writer(csvw)
+                prbo_write.writerow(['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Entrance time',
+                                     'Exit time', 'Residence time'])
+        except:
+            print(csv.Error())
 
 
 def readuid():
@@ -128,3 +137,18 @@ def f_recognition(cuid):
     cv2.destroyAllWindows()
 
     return name
+
+
+def enter_work_area(employee: tuple):
+    entrancedate_time = datetime.today()
+    with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='w', newline='') as csvw:
+        prbo_write = csv.writer(csvw)
+        prbo_write.writerow([employee[0], employee[1], employee[2], employee[8], entrancedate_time.date().isoformat(),
+                             entrancedate_time.time().strftime('%H:%M:%S')])
+
+# # ['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Entrance time',
+# #                                      'Exit time', 'Residence time'])
+
+
+def exit_work_area():
+    pass

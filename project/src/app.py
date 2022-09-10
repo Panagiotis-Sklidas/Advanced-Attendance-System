@@ -1,7 +1,5 @@
 import sys
 import re
-# import os
-import employee
 import cv2
 import tkinter as tk
 import sqlite3
@@ -12,7 +10,6 @@ from PIL import ImageTk, Image
 from tkcalendar import DateEntry
 import database as databasefile
 import functions as functionsfile
-import face_recognition
 
 # Initialize app
 functionsfile.createfilepath()
@@ -39,12 +36,11 @@ base.resizable(False, False)
 # Creating Screens
 homescreen = tk.Frame(base, width=600, height=350, bg=darkgrey)
 signup = tk.Frame(base, width=1200, height=700, bg=darkgrey)
-signin = tk.Frame(base, width=1200, height=700, bg=darkgrey)
+adminpanel = tk.Frame(base, width=1200, height=700, bg=darkgrey)
 employees = tk.Frame(base, width=1200, height=700, bg=darkgrey)
 sector = tk.Frame(base, width=1200, height=700, bg=darkgrey)
-for frame in (homescreen, signup, signin, employees, sector):
+for frame in (homescreen, signup, adminpanel, employees, sector):
     frame.grid(row=0, column=0, sticky='nesw')
-    # frame.grid(row=0, column=0, sticky='ns')
 
 
 # Removes all widget's that belong to screen
@@ -56,7 +52,7 @@ def clear_screen(screen):
 # Create homescreen
 def load_homescreen():
     clear_screen(signup)
-    clear_screen(signin)
+    clear_screen(adminpanel)
     clear_screen(employees)
     clear_screen(sector)
     homescreen.tkraise()
@@ -67,15 +63,19 @@ def load_homescreen():
     logo_img = ImageTk.PhotoImage(file="assets/logo_wh.jpg")
     logo = tk.Label(homescreen, image=logo_img, bg=darkgrey)
     logo.imge = logo_img
-    logo.grid(row=1, column=1, columnspan=2, pady=100, padx=275)
+    logo.grid(row=1, column=1, columnspan=2, pady=50, padx=275)
 
     # Buttons
     signupbtn = Button(homescreen, text="Sign up", command=lambda: load_signup(), height=2, width=10, font='Raleway',
                        cursor='hand2')
     signupbtn.grid(row=2, column=1, pady=45)
-    signinbtn = Button(homescreen, text="Sign in", command=lambda: login(), bg=blue, fg=white, height=2,
-                       width=10, font='Raleway', cursor='hand2', activeforeground=white, activebackground=blue)
-    signinbtn.grid(row=2, column=2, pady=45)
+    adminpanelbtn = Button(homescreen, text="Enter work area", command=lambda: login(), bg=blue, fg=white, height=2,
+                       width=15, font='Raleway', cursor='hand2', activeforeground=white, activebackground=blue)
+    adminpanelbtn.grid(row=2, column=2, pady=45)
+    signoutbtn = Button(homescreen, text="Exit work area", command=lambda: functionsfile.exit_work_area(), bg=red,
+                        fg=white, height=2, width=15, font='Raleway', cursor='hand2', activeforeground=white,
+                        activebackground=red)
+    signoutbtn.grid(row=3, column=2, pady=45)
 
 
 # Create signup
@@ -313,35 +313,33 @@ def login():
         cameraemployeename = functionsfile.f_recognition(readercarduid)
         inemployee = databasefile.selectemployee(readercarduid)
         if (inemployee is not None) and (cameraemployeename == readercarduid):
-            load_signin(inemployee)
-            print(inemployee)
+            functionsfile.enter_work_area(inemployee)
+            load_adminpanel(inemployee)
         else:
-            showinfo('Error', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to '
-                              'HR')
+            showinfo('Info', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to HR')
     except:
-        print('no employee')
         showerror('Error', 'Something went wrong try again')
 
 
-# Create signin screen
-def load_signin(inemployee):
-    clear_screen(homescreen)
-    signin.tkraise()
-    signin.pack_propagate(False)
-
-    lbl = tk.Label(signin, text=inemployee[1] + ' ' + inemployee[2])
-    lbl.grid(row=3, column=0)
-
+# Create adminpanel screen
+def load_adminpanel(inemployee):
     if inemployee[8] == 1:
-        hrbtn = tk.Button(signin, text='HR', command=lambda: load_employees())
-        hrbtn.grid(row=0, column=2, pady=50, padx=20)
-        sectorbtn = tk.Button(signin, text='SECTORS', command=lambda: load_sector())
-        sectorbtn.grid(row=1, column=2, pady=50, padx=20)
-        backbtn = tk.Button(signin, text='BACK', command=lambda: load_homescreen())
-        backbtn.grid(row=2, column=2, pady=50, padx=20)
+        clear_screen(homescreen)
+        adminpanel.tkraise()
+        adminpanel.pack_propagate(False)
+
+        spacer = tk.Label(adminpanel, bg=darkgrey, fg=white, padx=200, pady=25)
+        spacer.grid(row=0, column=0)
+        admnpnllbl = tk.Label(adminpanel, text='Admin Panel', font='Relaway', bg=darkgrey, fg=white)
+        admnpnllbl.grid(row=0, column=1, columnspan=4, pady=50, padx=20)
+        hrbtn = tk.Button(adminpanel, text='Human Resources', command=lambda: load_employees(), font='Relaway')
+        hrbtn.grid(row=1, column=2, pady=50, padx=20)
+        sectorbtn = tk.Button(adminpanel, text='Sectors', command=lambda: load_sector(), font='Relaway')
+        sectorbtn.grid(row=1, column=3, pady=50, padx=20)
+        backbtn = tk.Button(adminpanel, text='Back', command=lambda: load_homescreen(), font='Relaway')
+        backbtn.grid(row=2, column=0, columnspan=4, pady=50, padx=20)
     else:
-        backbtn = tk.Button(signin, text='BACK', command=lambda: load_homescreen())
-        backbtn.grid(row=2, column=2, pady=50, padx=20)
+        print('OK')
 
 
 # Create employee screen
@@ -408,7 +406,7 @@ def load_employees():
                         cursor='hand2')
     dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltempl.grid(row=1, column=0, pady=30, padx=20)
-    backempl = tk.Button(employees, text='Back', command=lambda: load_signin(inemployee), height=1, width=15, font='Raleway',
+    backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=15, font='Raleway',
                          cursor='hand2')
     backempl.grid(row=3, column=0, pady=417, padx=20)
 
@@ -579,7 +577,7 @@ def load_sector():
     # sctridentry = tk.Entry(sector, width=30, bg=white)
     # sctridentry.grid(row=5, column=0, padx=20)
 
-    secback = tk.Button(sector, text='Back', command=lambda: load_signin(inemployee), height=1, width=13, font='Raleway',
+    secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=13, font='Raleway',
                         cursor='hand2')
     secback.grid(row=4, column=0, pady=320, padx=20)
 
