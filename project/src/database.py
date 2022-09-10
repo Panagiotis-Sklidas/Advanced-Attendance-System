@@ -11,10 +11,8 @@ def createdb():
     :return:
     """
     if path.exists('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db'):
-        # print('DB already exists')
         pass
     else:
-        print('Create DB')
         conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
         cur = conn.cursor()
 
