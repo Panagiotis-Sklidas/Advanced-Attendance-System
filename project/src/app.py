@@ -72,7 +72,7 @@ def load_homescreen():
     adminpanelbtn = Button(homescreen, text="Enter work area", command=lambda: login(), bg=blue, fg=white, height=2,
                        width=15, font='Raleway', cursor='hand2', activeforeground=white, activebackground=blue)
     adminpanelbtn.grid(row=2, column=2, pady=45)
-    signoutbtn = Button(homescreen, text="Exit work area", command=lambda: functionsfile.exit_work_area(), bg=red,
+    signoutbtn = Button(homescreen, text="Exit work area", command=lambda: logout(), bg=red,
                         fg=white, height=2, width=15, font='Raleway', cursor='hand2', activeforeground=white,
                         activebackground=red)
     signoutbtn.grid(row=3, column=2, pady=45)
@@ -321,8 +321,23 @@ def login():
         showerror('Error', 'Something went wrong try again')
 
 
+def logout():
+    try:
+        readercarduid = functionsfile.readuid()
+        outemployee = databasefile.selectemployee(readercarduid)
+        if outemployee is not None:
+            functionsfile.exit_work_area(outemployee[0])
+            showinfo('Info', 'Your exiting time has been stored successfully')
+        else:
+            showinfo('Error', 'The card\'s uid does not match any uid in the database\nMake sure to use your card or '
+                              'talk to HR')
+    except:
+        showerror('Error', 'Something went wrong try again')
+
+
 # Create adminpanel screen
 def load_adminpanel(inemployee):
+    showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
     if inemployee[8] == 1:
         clear_screen(homescreen)
         adminpanel.tkraise()
@@ -338,8 +353,6 @@ def load_adminpanel(inemployee):
         sectorbtn.grid(row=1, column=3, pady=50, padx=20)
         backbtn = tk.Button(adminpanel, text='Back', command=lambda: load_homescreen(), font='Relaway')
         backbtn.grid(row=2, column=0, columnspan=4, pady=50, padx=20)
-    else:
-        print('OK')
 
 
 # Create employee screen

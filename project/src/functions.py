@@ -141,14 +141,39 @@ def f_recognition(cuid):
 
 def enter_work_area(employee: tuple):
     entrancedate_time = datetime.today()
-    with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='w', newline='') as csvw:
+    with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='a', newline='') as csvw:
         prbo_write = csv.writer(csvw)
         prbo_write.writerow([employee[0], employee[1], employee[2], employee[8], entrancedate_time.date().isoformat(),
-                             entrancedate_time.time().strftime('%H:%M:%S')])
-
-# # ['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Entrance time',
-# #                                      'Exit time', 'Residence time'])
+                             entrancedate_time.time().strftime('%H:%M:%S'), 'N', 'N'])
 
 
-def exit_work_area():
-    pass
+def exit_work_area(empuid):
+    outdate_time = datetime.today()
+    indate = outdate_time.date().isoformat()
+    found = False
+    newl = []
+
+    file = io.open('C:/AdvancedAttendanceSystem/presencebook.csv', 'r')
+    prbo_read = csv.reader(file)
+
+    for row in prbo_read:
+        if (row[0] == empuid) and (row[4] == indate) and (row[6] == 'N') and (row[7] == 'N'):
+            found = True
+            row[6] = outdate_time.time().strftime('%H:%M:%S')
+            out_time = str(row[6])
+            in_time = str(row[5])
+            fmt = '%H:%M:%S'
+            row[7] = datetime.strptime(out_time, fmt) - datetime.strptime(in_time, fmt)
+            newl.append(row)
+        else:
+            newl.append(row)
+    file.close()
+
+    if not found:
+        print('no employee')
+    else:
+        file = io.open('C:/AdvancedAttendanceSystem/presencebook.csv', 'w+', newline='', encoding='utf-8')
+        prbo_write = csv.writer(file)
+        prbo_write.writerows(newl)
+        file.seek(0)
+    file.close()
