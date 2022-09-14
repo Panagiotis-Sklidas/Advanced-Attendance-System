@@ -177,3 +177,26 @@ def exit_work_area(empuid):
         prbo_write.writerows(newl)
         file.seek(0)
     file.close()
+
+
+def calculate_time_in_sectors(sector):
+    count = 0
+    time_in = 0
+
+    file = io.open('C:/AdvancedAttendanceSystem/presencebook.csv', 'r')
+    prbo_read = csv.reader(file)
+
+    for row in prbo_read:
+        sectorid = row[3]
+        if (sectorid == str(sector)) and not ((row[7] == 'N') or (row[7] is None)):
+            count += 1
+            hh, mm, ss = row[7].split(':')
+
+            seconds = (int(hh) * 3600) + (int(mm) * 60) + int(ss)
+            time_in += seconds
+    file.close()
+
+    # hours = str(timedelta(seconds=time_in))
+    hours2 = ("%.2f" % (time_in / 60))
+
+    return hours2
