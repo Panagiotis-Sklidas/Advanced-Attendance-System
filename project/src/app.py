@@ -583,16 +583,12 @@ def load_sector():
                        cursor='hand2')
     dltsec.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltsec.grid(row=3, column=0, pady=30, padx=20)
-
-    # sctridlbl = tk.Label(sector, text='Sector Id', bg=darkgrey, fg=white)
-    # sctridlbl.grid(row=4, column=0, pady=20, padx=20)
-    #
-    # sctridentry = tk.Entry(sector, width=30, bg=white)
-    # sctridentry.grid(row=5, column=0, padx=20)
-
     secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=13, font='Raleway',
                         cursor='hand2')
     secback.grid(row=4, column=0, pady=320, padx=20)
+    hours_spent_per_year_in_all_sectors_btn = tk.Button(sector, text='Load Stats', command=lambda: functionsfile.create_graphs(), height=1, width=13, font='Raleway',
+                        cursor='hand2')
+    hours_spent_per_year_in_all_sectors_btn.grid(row=1, column=2, pady=30, padx=20)
 
 
 # Delete the selected sector

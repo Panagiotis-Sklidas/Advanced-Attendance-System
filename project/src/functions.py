@@ -6,7 +6,8 @@ import numpy as np
 from database import *
 import csv
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
 
 
 def createfilepath():
@@ -196,7 +197,29 @@ def calculate_time_in_sectors(sector):
             time_in += seconds
     file.close()
 
-    # hours = str(timedelta(seconds=time_in))
-    hours2 = ("%.2f" % (time_in / 60))
+    hours = str(timedelta(seconds=time_in))
 
-    return hours2
+    return hours
+
+
+def create_graphs():
+    sectors = fetchsectors()
+    sid = []
+    sname = []
+    data = {}
+    for sector in sectors:
+        sid.append(sector[0])
+        sname.append(sector[1])
+
+    for sector in sectors:
+        data.__setitem__(sector[1], calculate_time_in_sectors(sector[0]))
+        # x = calculate_time_in_sectors(s)
+        # print(s, x)
+
+    # return data
+
+    plt.bar(data.keys(), data.values())
+    plt.xlabel('sectors')
+    plt.ylabel('hours')
+    plt.title('Hours spend in each sector')
+    plt.show()
