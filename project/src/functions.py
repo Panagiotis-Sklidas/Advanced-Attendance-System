@@ -25,8 +25,8 @@ def createfilepath():
         try:
             with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='w', newline='') as csvw:
                 prbo_write = csv.writer(csvw)
-                prbo_write.writerow(['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Entrance time',
-                                     'Exit time', 'Residence time'])
+                prbo_write.writerow(['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Year', 'Week',
+                                     'Entrance time', 'Exit time', 'Residence time'])
         except:
             print(csv.Error())
 
@@ -142,10 +142,12 @@ def f_recognition(cuid):
 
 def enter_work_area(employee: tuple):
     entrancedate_time = datetime.today()
+    year = entrancedate_time.isocalendar()[0]
+    week = entrancedate_time.isocalendar()[1]
     with io.open('C:/AdvancedAttendanceSystem/presencebook.csv', mode='a', newline='') as csvw:
         prbo_write = csv.writer(csvw)
         prbo_write.writerow([employee[0], employee[1], employee[2], employee[8], entrancedate_time.date().isoformat(),
-                             entrancedate_time.time().strftime('%H:%M:%S'), 'N', 'N'])
+                             year, week, entrancedate_time.time().strftime('%H:%M:%S'), 'N', 'N'])
 
 
 def exit_work_area(empuid):
@@ -213,10 +215,6 @@ def create_graphs():
 
     for sector in sectors:
         data.__setitem__(sector[1], calculate_time_in_sectors(sector[0]))
-        # x = calculate_time_in_sectors(s)
-        # print(s, x)
-
-    # return data
 
     plt.bar(data.keys(), data.values())
     plt.xlabel('sectors')
