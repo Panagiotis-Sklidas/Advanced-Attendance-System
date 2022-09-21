@@ -160,13 +160,13 @@ def exit_work_area(empuid):
     prbo_read = csv.reader(file)
 
     for row in prbo_read:
-        if (row[0] == empuid) and (row[4] == indate) and (row[6] == 'N') and (row[7] == 'N'):
+        if (row[0] == empuid) and (row[4] == indate) and (row[8] == 'N') and (row[9] == 'N'):
             found = True
-            row[6] = outdate_time.time().strftime('%H:%M:%S')
-            out_time = str(row[6])
-            in_time = str(row[5])
+            row[8] = outdate_time.time().strftime('%H:%M:%S')
+            out_time = str(row[8])
+            in_time = str(row[7])
             fmt = '%H:%M:%S'
-            row[7] = datetime.strptime(out_time, fmt) - datetime.strptime(in_time, fmt)
+            row[9] = datetime.strptime(out_time, fmt) - datetime.strptime(in_time, fmt)
             newl.append(row)
         else:
             newl.append(row)
@@ -188,12 +188,11 @@ def calculate_time_in_sectors(sector):
 
     file = io.open('C:/AdvancedAttendanceSystem/presencebook.csv', 'r')
     prbo_read = csv.reader(file)
-
     for row in prbo_read:
         sectorid = row[3]
-        if (sectorid == str(sector)) and not ((row[7] == 'N') or (row[7] is None)):
+        if (sectorid == str(sector)) and not ((row[9] == 'N') or (row[9] is None)):
             count += 1
-            hh, mm, ss = row[7].split(':')
+            hh, mm, ss = row[9].split(':')
 
             seconds = (int(hh) * 3600) + (int(mm) * 60) + int(ss)
             time_in += seconds
