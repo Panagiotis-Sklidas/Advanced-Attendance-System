@@ -314,6 +314,7 @@ def login():
         inemployee = databasefile.selectemployee(readercarduid)
         if (inemployee is not None) and (cameraemployeename == readercarduid):
             functionsfile.enter_work_area(inemployee)
+            showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
             load_adminpanel(inemployee)
         else:
             showinfo('Info', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to HR')
@@ -337,7 +338,6 @@ def logout():
 
 # Create adminpanel screen
 def load_adminpanel(inemployee):
-    showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
     if inemployee[8] == 1:
         clear_screen(homescreen)
         adminpanel.tkraise()
