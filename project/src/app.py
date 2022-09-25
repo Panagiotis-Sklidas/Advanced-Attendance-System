@@ -678,7 +678,7 @@ def updatesector():
     if len(secnameup.get()) > 0:
         try:
             selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
-            databasefile.updatesector(selection, secnameup.get())
+            databasefile.updatesector(selection, secnameup.get().upper())
             showinfo('Info', 'Sector has been updated succesfully')
             sctrupdtpu.destroy()
             load_sector()
