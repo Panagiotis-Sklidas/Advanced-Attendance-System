@@ -182,41 +182,81 @@ def exit_work_area(empuid):
     file.close()
 
 
-def calculate_time_in_sectors(sector):
+def calculate_time_in_sectors(sector, timeframe):
+    """
+    Calculates time spend in a specific sector
+
+    :param sector: str
+    :param timeframe: str
+    :return: time_in
+    """
     count = 0
     time_in = 0
 
     file = io.open('C:/AdvancedAttendanceSystem/presencebook.csv', 'r')
     prbo_read = csv.reader(file)
-    for row in prbo_read:
-        sectorid = row[3]
-        if (sectorid == str(sector)) and not ((row[9] == 'N') or (row[9] is None)):
-            count += 1
-            hh, mm, ss = row[9].split(':')
 
-            seconds = (int(hh) * 3600) + (int(mm) * 60) + int(ss)
-            time_in += seconds
+    if timeframe == 'week':
+        for row in prbo_read:
+            sectorid = row[3]
+            if (sectorid == str(sector)) and not ((row[9] == 'N') or (row[9] is None)) and \
+                    str(row[6]) == str(datetime.today().isocalendar()[1]):
+                count += 1
+                hh, mm, ss = row[9].split(':')
+
+                # seconds = (int(hh) * 3600) + (int(mm) * 60) + int(ss)
+                minute = (int(hh) * 60) + int(mm) + (int(ss) / 60)
+                # time_in += seconds
+                time_in += minute
+    elif timeframe == 'year':
+        for row in prbo_read:
+            sectorid = row[3]
+            if (sectorid == str(sector)) and not ((row[9] == 'N') or (row[9] is None)) and \
+                    str(row[6]) == str(datetime.today().isocalendar()[1]):
+                count += 1
+                hh, mm, ss = row[9].split(':')
+                minute = (int(hh) * 60) + int(mm) + (int(ss) / 60)
+                days = minute / 1440
+                time_in += days
     file.close()
 
-    hours = str(timedelta(seconds=time_in))
+    # hours = str(timedelta(seconds=time_in))
 
-    return hours
+    return time_in
 
 
 def create_graphs():
+    """
+    Create graph
+
+    :return: graphs
+    """
     sectors = fetchsectors()
     sid = []
     sname = []
     data = {}
+    datayear = {}
     for sector in sectors:
         sid.append(sector[0])
         sname.append(sector[1])
 
     for sector in sectors:
-        data.__setitem__(sector[1], calculate_time_in_sectors(sector[0]))
+        data.__setitem__(sector[1], calculate_time_in_sectors(sector[0], 'week'))
+    for sector in sectors:
+        datayear.__setitem__(sector[1], calculate_time_in_sectors(sector[0], 'year'))
 
-    plt.bar(data.keys(), data.values())
-    plt.xlabel('sectors')
-    plt.ylabel('hours')
-    plt.title('Hours spend in each sector')
+    plt.bar(data.keys(), data.values(), width=0.4)
+    plt.subplot(1, 2, 1)
+    plt.xticks(rotation=45)
+    plt.ylabel('minutes')
+    plt.grid(axis='y')
+    plt.title('Minutes spend in each sector this week=' + str(datetime.today().isocalendar()[1]))
+
+    plt.bar(datayear.keys(), datayear.values(), width=0.4)
+    plt.subplot(1, 2, 2)
+    plt.xticks(rotation=45)
+    plt.ylabel('days')
+    plt.grid(axis='y')
+    plt.title('Days spend in each sector this year=' + str(datetime.today().isocalendar()[0]))
+
     plt.show()
