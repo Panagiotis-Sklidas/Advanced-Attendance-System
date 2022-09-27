@@ -586,9 +586,14 @@ def load_sector():
     secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=13, font='Raleway',
                         cursor='hand2')
     secback.grid(row=4, column=0, pady=320, padx=20)
-    hours_spent_per_year_in_all_sectors_btn = tk.Button(sector, text='Load Stats', command=lambda: functionsfile.create_graphs(), height=1, width=13, font='Raleway',
-                        cursor='hand2')
-    hours_spent_per_year_in_all_sectors_btn.grid(row=1, column=2, pady=30, padx=20)
+    minutes_spent_week_in_all_sectors_btn = tk.Button(sector, text='Week Sector Stats',
+                                                      command=lambda: functionsfile.create_week_graphs(),
+                                                      height=1, width=18, font='Raleway', cursor='hand2')
+    minutes_spent_week_in_all_sectors_btn.grid(row=1, column=2, pady=30, padx=20)
+    hours_spent_year_in_all_sectors_btn = tk.Button(sector, text='Year Sector Stats',
+                                                      command=lambda: functionsfile.create_year_graphs(),
+                                                      height=1, width=18, font='Raleway', cursor='hand2')
+    hours_spent_year_in_all_sectors_btn.grid(row=2, column=2, pady=30, padx=20)
 
 
 # Delete the selected sector
