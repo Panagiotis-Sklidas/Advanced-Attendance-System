@@ -96,6 +96,8 @@ def encodefaces(cuid):
         photoname = cuid + '.jpg'
         for f in fnames:
             if f == photoname:
+            # if f.endswith('.jpg'):
+            #     faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + f)
                 faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + photoname)
                 encoding = face_recognition.face_encodings(faceimage)[0]
                 encodedimages[f.split(".")[0]] = encoding
@@ -103,6 +105,7 @@ def encodefaces(cuid):
 
 
 def f_recognition(cuid):
+    startnow = datetime.now()
     images = encodefaces(cuid)
     faces = list(images.values())
     names = list(images.keys())
@@ -137,6 +140,7 @@ def f_recognition(cuid):
     cap.release()
     cv2.destroyAllWindows()
 
+    print(datetime.now() - startnow)
     return name
 
 
