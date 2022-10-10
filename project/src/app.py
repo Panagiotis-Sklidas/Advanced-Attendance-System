@@ -25,7 +25,7 @@ blue = '#1757b0'
 
 # Build main window
 base = Tk()
-base.iconbitmap(r'assets/favicon_bl.ico')
+base.iconbitmap(r'assets/favicon_64x64.ico')
 base.title('Advanced Attendance System')
 height = int(base.winfo_screenheight() / 10)
 width = int(base.winfo_screenwidth() * 0.01)  # Moving the window 1% down from the top
