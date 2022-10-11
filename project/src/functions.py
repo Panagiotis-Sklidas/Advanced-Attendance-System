@@ -74,7 +74,7 @@ def generateemail(firstname: str, lastname: str):
 
     :param firstname: str
     :param lastname: str
-    :return: email
+    :return: email str
     """
     email = firstname.lower()[:2] + lastname.lower()[:5] + '@company.com'
     res = selectemployeebyemail(email)  # Search if there is a user with the same email
@@ -91,6 +91,12 @@ def generateemail(firstname: str, lastname: str):
 
 
 def encodefaces(cuid):
+    """
+    Encode a specific face image
+
+    :param cuid: str
+    :return: encodedimages an array of 128 values which is the encoded face image
+    """
     encodedimages = {}
     for dirpath, dnames, fnames in os.walk('C:/AdvancedAttendanceSystem/FaceImages/'):
         photoname = cuid + '.jpg'
@@ -105,6 +111,12 @@ def encodefaces(cuid):
 
 
 def f_recognition(cuid):
+    """
+    Compare the encoded input image from the webcam with the encoded image that has the same name as the parameter
+
+    :param cuid: str
+    :return: name str
+    """
     startnow = datetime.now()
     images = encodefaces(cuid)
     faces = list(images.values())
@@ -145,6 +157,11 @@ def f_recognition(cuid):
 
 
 def enter_work_area(employee: tuple):
+    """
+    Κeeps the details and presence of the particular employee
+
+    :param employee: tuple
+    """
     entrancedate_time = datetime.today()
     year = entrancedate_time.isocalendar()[0]
     week = entrancedate_time.isocalendar()[1]
@@ -155,6 +172,11 @@ def enter_work_area(employee: tuple):
 
 
 def exit_work_area(empuid):
+    """
+    Adds the exit time of a particular user
+
+    :param empuid: str
+    """
     outdate_time = datetime.today()
     indate = outdate_time.date().isoformat()
     found = False
