@@ -19,13 +19,13 @@
 ## About the Project
 The current project concerns the thesis, which I had to implement as part of my studies in the Computer Science 
 department at International Hellenic University. Its topic is "Study, design, and development of software for the
-control ed access into the workplace of employees with the help of an RFID smartcard and recognition of their face" in this framework, I created this software application for Windows computers in python.
+controlled access into the workplace of employees with the help of an RFID smartcard and recognition of their face" in this framework, I created this software application for Windows computers in python.
 
 <!-- Features -->
 ### Features
  * New User Registration
- * Entry time recording with the details of the RFID smart card and recognition of the employee's face
- * Record the time of exit with the details of the smart RFID card of the employee
+ * Entry time recording with details from the RFID smart card and recognition of the employee's face
+ * Record the time of exit using the details from the smart RFID card of the employee
  * CRUD and statistics view functions available to specific users
 
 <!-- Getting Started -->
@@ -33,6 +33,10 @@ control ed access into the workplace of employees with the help of an RFID smart
 
 <!-- Prerequisites -->
 ### Prerequisites
+In order to use this application you should have the following hardware:
+* Webcam
+* RFID/NFC reader (I used ACR122U USB NFC Reader form Advanced Card Systeems Ltd.)
+* Compatible RFID/NFC smartcards
 
 <!-- Run Locally-->
 ### Run Locally
@@ -40,11 +44,15 @@ control ed access into the workplace of employees with the help of an RFID smart
 <!-- Installation -->
 ### Installation
 
+
 <!-- Usage -->
 ## Usage
 
 <!-- License -->
 ## License
+Copyright@ 2022 Department of Computer Science, International University of Greece,
+<br>[https://www.cs.ihu.gr](https://www.cs.ihu.gr)<br>
+The content of this Thesis is the intellectual property of the author(s), the supervising professor and the Department of Informatics of IHU and is protected by the law on intellectual property (Law 2121/1993 and applicable International Law rules in GREECE).
 
 <!-- Acknowledgments-->
 ## Acknowledgements
