@@ -29,16 +29,16 @@ base.iconbitmap(r'assets/favicon_64x64.ico')
 base.title('Advanced Attendance System')
 height = int(base.winfo_screenheight() / 10)
 width = int(base.winfo_screenwidth() * 0.01)  # Moving the window 1% down from the top
-base.geometry('1200x700+' + str(height) + '+' + str(width))  # Setting the size and the location
-base.configure(bg=darkgrey)
+# base.geometry('1200x700+' + str(height) + '+' + str(width))  # Setting the size and the location
+base.configure(bg=blue)
 base.resizable(False, False)
 
 # Creating Screens
-homescreen = tk.Frame(base, width=600, height=350, bg=darkgrey)
-signup = tk.Frame(base, width=1200, height=700, bg=darkgrey)
-adminpanel = tk.Frame(base, width=1200, height=700, bg=darkgrey)
-employees = tk.Frame(base, width=1200, height=700, bg=darkgrey)
-sector = tk.Frame(base, width=1200, height=700, bg=darkgrey)
+homescreen = tk.Frame(base, bg=darkgrey)
+signup = tk.Frame(base, bg=darkgrey)
+adminpanel = tk.Frame(base, bg=darkgrey)
+employees = tk.Frame(base, bg=darkgrey)
+sector = tk.Frame(base, bg=darkgrey)
 for frame in (homescreen, signup, adminpanel, employees, sector):
     frame.grid(row=0, column=0, sticky='nesw')
 
@@ -51,6 +51,7 @@ def clear_screen(screen):
 
 # Create homescreen
 def load_homescreen():
+    base.geometry('1100x650+' + str(height) + '+' + str(width))
     clear_screen(signup)
     clear_screen(adminpanel)
     clear_screen(employees)
@@ -80,14 +81,15 @@ def load_homescreen():
 
 # Create signup
 def load_signup():
+    base.geometry('475x550+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     signup.tkraise()
     signup.pack_propagate(True)
 
     # Signup widgets
     # Labels
-    spacer = tk.Label(signup, bg=darkgrey, fg=white, padx=200, pady=25)
-    spacer.grid(row=0, column=0)
+    # spacer = tk.Label(signup, bg=darkgrey, fg=white, padx=200, pady=25)
+    # spacer.grid(row=0, column=0)
     lbl = tk.Label(signup, text='UID:', bg=darkgrey, fg=white, padx=10, pady=10)
     lbl.grid(row=1, column=1)
     lbl1 = tk.Label(signup, text='First name:', bg=darkgrey, fg=white, padx=10, pady=10)
@@ -153,7 +155,7 @@ def load_signup():
     backbtn.grid(row=11, column=1, pady=50, padx=10)
     acceptbtn = Button(signup, text="Accept", command=lambda: accept(), bg='#1757b0', fg='#dedede', height=1,
                        width=10, font='Raleway', cursor='hand2')
-    acceptbtn.grid(row=11, column=2, pady=50, padx=20)
+    acceptbtn.grid(row=11, column=3, pady=50, padx=20)
 
 
 def takephoto():
@@ -318,8 +320,48 @@ def login():
             load_adminpanel(inemployee)
         else:
             showinfo('Info', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to HR')
+            supervisoraccess(True)
     except:
-        showerror('Error', 'Something went wrong try again')
+        showerror('Error', 'Something went wrong try again or talk to HR')
+        supervisoraccess(True)
+
+
+def supervisoraccess(enter: bool):
+    global grantaccess
+    grantaccess = Toplevel()
+    grantaccess.configure(bg=darkgrey)
+    grantaccess.resizable(False, False)
+    lbl = tk.Label(grantaccess, text='Provide the unique id of the user to whom you want to grant access', font='Relaway')
+    lbl.grid(column=0, row=0)
+    lbl.configure(bg=darkgrey, fg=white, pady=20, padx=20)
+    uidfield = tk.Entry(grantaccess)
+    uidfield.configure(font='Relaway')
+    uidfield.grid(column=0, row=1)
+    grantbtn = tk.Button(grantaccess, text='Grant Access', font='Relaway', bg=green, activebackground=green, fg=white,
+                         activeforeground=white, command=lambda: grant(enter, uidfield.get().upper()))
+    grantbtn.grid(column=0, row=2, pady=20)
+
+    if enter:
+        grantaccess.title('Supervisor Grant Access - Entering')
+    else:
+        grantaccess.title('Supervisor Grant Access - Exiting')
+
+
+def grant(enter: bool, uid: str):
+    problematicemployee = databasefile.selectemployee(uid)
+
+    if enter:
+        if problematicemployee is not None:
+            functionsfile.enter_work_area(problematicemployee)
+            showinfo('Info', 'Welcome ' + problematicemployee[1] + ' ' + problematicemployee[2] + ' have a nice day')
+            inemployee = problematicemployee
+            load_adminpanel(inemployee)
+            grantaccess.destroy()
+    else:
+        if problematicemployee is not None:
+            functionsfile.exit_work_area(problematicemployee[0])
+            showinfo('Info', 'Your exiting time has been stored successfully')
+            grantaccess.destroy()
 
 
 def logout():
@@ -332,19 +374,22 @@ def logout():
         else:
             showinfo('Error', 'The card\'s uid does not match any uid in the database\nMake sure to use your card or '
                               'talk to HR')
+            supervisoraccess(False)
     except:
-        showerror('Error', 'Something went wrong try again')
+        showerror('Error', 'Something went wrong try again or talk to HR')
+        supervisoraccess(False)
 
 
 # Create adminpanel screen
 def load_adminpanel(inemployee):
+    base.geometry('350x400+' + str(height) + '+' + str(width))
     if inemployee[8] == 1:
         clear_screen(homescreen)
         adminpanel.tkraise()
         adminpanel.pack_propagate(False)
 
-        spacer = tk.Label(adminpanel, bg=darkgrey, fg=white, padx=200, pady=25)
-        spacer.grid(row=0, column=0)
+        # spacer = tk.Label(adminpanel, bg=darkgrey, fg=white, padx=200, pady=25)
+        # spacer.grid(row=0, column=0)
         admnpnllbl = tk.Label(adminpanel, text='Admin Panel', font='Relaway', bg=darkgrey, fg=white)
         admnpnllbl.grid(row=0, column=1, columnspan=4, pady=50, padx=20)
         hrbtn = tk.Button(adminpanel, text='Human Resources', command=lambda: load_employees(), font='Relaway')
@@ -352,11 +397,12 @@ def load_adminpanel(inemployee):
         sectorbtn = tk.Button(adminpanel, text='Sectors', command=lambda: load_sector(), font='Relaway')
         sectorbtn.grid(row=1, column=3, pady=50, padx=20)
         backbtn = tk.Button(adminpanel, text='Back', command=lambda: load_homescreen(), font='Relaway')
-        backbtn.grid(row=2, column=0, columnspan=4, pady=50, padx=20)
+        backbtn.grid(row=2, column=0, columnspan=4, pady=50, padx=20, sticky='nesw')
 
 
 # Create employee screen
 def load_employees():
+    base.geometry('1150x675+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     employees.tkraise()
     employees.pack_propagate(False)
@@ -430,7 +476,7 @@ def updempl():
         global empludtpu
         empludtpu = Toplevel()
         empludtpu.title('AAS - Update employee')
-        empludtpu.iconbitmap(r'assets/facivon_bl.ico')
+        empludtpu.iconbitmap(r'assets/favicon_bl.ico')
         empludtpu.focus_force()
         empludtpu.tkraise()
         empludtpu.configure(background=darkgrey)
@@ -532,6 +578,7 @@ def deleteempl():
 
 # Create sector screen
 def load_sector():
+    base.geometry('725x675+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     sector.tkraise()
     sector.pack_propagate(False)
@@ -569,7 +616,7 @@ def load_sector():
         else:
             sectortable.insert(parent='', index='end', iid=str(i), values=result, tags=('odd',))
         counter += 1
-    sectortable.grid(row=1, column=1, rowspan=4, sticky='new', pady=30, padx=40)
+    sectortable.grid(row=1, column=1, rowspan=6, sticky='new', pady=30, padx=40)
 
     insrtsec = tk.Button(sector, text='Insert Sector', command=lambda: insec(), height=1, width=13, font='Raleway',
                          cursor='hand2')
@@ -585,15 +632,15 @@ def load_sector():
     dltsec.grid(row=3, column=0, pady=30, padx=20)
     secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=13, font='Raleway',
                         cursor='hand2')
-    secback.grid(row=4, column=0, pady=320, padx=20)
+    secback.grid(row=6, column=0, pady=113, padx=20)
     minutes_spent_week_in_all_sectors_btn = tk.Button(sector, text='Week Sector Stats',
                                                       command=lambda: functionsfile.create_week_graphs(),
                                                       height=1, width=18, font='Raleway', cursor='hand2')
-    minutes_spent_week_in_all_sectors_btn.grid(row=1, column=2, pady=30, padx=20)
+    minutes_spent_week_in_all_sectors_btn.grid(row=4, column=0, pady=30, padx=20)
     hours_spent_year_in_all_sectors_btn = tk.Button(sector, text='Year Sector Stats',
                                                       command=lambda: functionsfile.create_year_graphs(),
                                                       height=1, width=18, font='Raleway', cursor='hand2')
-    hours_spent_year_in_all_sectors_btn.grid(row=2, column=2, pady=30, padx=20)
+    hours_spent_year_in_all_sectors_btn.grid(row=5, column=0, pady=30, padx=20)
 
 
 # Delete the selected sector
@@ -616,7 +663,7 @@ def insec():
     global sctrinsrtpu, secnameentry
     sctrinsrtpu = Toplevel()
     sctrinsrtpu.title('AAS - Add new sector')
-    sctrinsrtpu.iconbitmap(r'assets/facivon_bl.ico')
+    sctrinsrtpu.iconbitmap(r'assets/favicon_bl.ico')
     sctrinsrtpu.focus_force()
     sctrinsrtpu.tkraise()
     sctrinsrtpu.configure(background=darkgrey)
@@ -656,7 +703,7 @@ def updtsec():
     if sectortable.focus() != "":
         sctrupdtpu = Toplevel()
         sctrupdtpu.title('AAS - Update sector')
-        sctrupdtpu.iconbitmap(r'assets/facivon_bl.ico')
+        sctrupdtpu.iconbitmap(r'assets/favicon_bl.ico')
         sctrupdtpu.focus_force()
         sctrupdtpu.tkraise()
         sctrupdtpu.configure(background=darkgrey)
