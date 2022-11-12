@@ -30,7 +30,7 @@ base.title('Advanced Attendance System')
 height = int(base.winfo_screenheight() / 10)
 width = int(base.winfo_screenwidth() * 0.01)  # Moving the window 1% down from the top
 # base.geometry('1200x700+' + str(height) + '+' + str(width))  # Setting the size and the location
-base.configure(bg=blue)
+base.configure(bg=darkgrey)
 base.resizable(False, False)
 
 # Creating Screens
@@ -81,7 +81,7 @@ def load_homescreen():
 
 # Create signup
 def load_signup():
-    base.geometry('475x550+' + str(height) + '+' + str(width))
+    base.geometry('475x600+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     signup.tkraise()
     signup.pack_propagate(True)
@@ -152,10 +152,10 @@ def load_signup():
 
     backbtn = Button(signup, text="Back", command=lambda: load_homescreen(), height=1, width=10, font='Raleway',
                      cursor='hand2')
-    backbtn.grid(row=11, column=1, pady=50, padx=10)
+    backbtn.grid(row=12, column=1, pady=50, padx=10)
     acceptbtn = Button(signup, text="Accept", command=lambda: accept(), bg='#1757b0', fg='#dedede', height=1,
                        width=10, font='Raleway', cursor='hand2')
-    acceptbtn.grid(row=11, column=3, pady=50, padx=20)
+    acceptbtn.grid(row=12, column=3, pady=50, padx=20)
 
 
 def takephoto():
@@ -301,15 +301,17 @@ def accept():
         try:
             databasefile.insertemployee(cid.get(), fn.get(), ln.get(), email.get(), phone.get(), db, dj, jp.get(),
                                         int(sector[0]))
-            useradded = tk.Label(signup, text='Added user succeeded', bg=darkgrey, fg=green, font='Raleway')
-            useradded.grid(row=11, column=3)
+            useradded = tk.Label(signup, text='User added successfully', bg=darkgrey, fg=green, font='Raleway')
+            useradded.grid(row=11, column=0, columnspan=3)
             # userAdded.after(1500, userAdded.grid_forget())
         except:
             showerror('Error', 'This uid already exist\nPlease ask for a different card')
 
 
+global inemployee
+
+
 def login():
-    global inemployee
     try:
         readercarduid = functionsfile.readuid()
         cameraemployeename = functionsfile.f_recognition(readercarduid)
@@ -348,18 +350,17 @@ def supervisoraccess(enter: bool):
 
 
 def grant(enter: bool, uid: str):
-    problematicemployee = databasefile.selectemployee(uid)
+    inemployee = databasefile.selectemployee(uid)
 
     if enter:
-        if problematicemployee is not None:
-            functionsfile.enter_work_area(problematicemployee)
-            showinfo('Info', 'Welcome ' + problematicemployee[1] + ' ' + problematicemployee[2] + ' have a nice day')
-            inemployee = problematicemployee
+        if inemployee is not None:
+            functionsfile.enter_work_area(inemployee)
+            showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
             load_adminpanel(inemployee)
             grantaccess.destroy()
     else:
-        if problematicemployee is not None:
-            functionsfile.exit_work_area(problematicemployee[0])
+        if inemployee is not None:
+            functionsfile.exit_work_area(inemployee[0])
             showinfo('Info', 'Your exiting time has been stored successfully')
             grantaccess.destroy()
 
@@ -381,9 +382,9 @@ def logout():
 
 
 # Create adminpanel screen
-def load_adminpanel(inemployee):
+def load_adminpanel(employee):
     base.geometry('350x400+' + str(height) + '+' + str(width))
-    if inemployee[8] == 1:
+    if employee[8] == 1:
         clear_screen(homescreen)
         adminpanel.tkraise()
         adminpanel.pack_propagate(False)
@@ -392,16 +393,16 @@ def load_adminpanel(inemployee):
         # spacer.grid(row=0, column=0)
         admnpnllbl = tk.Label(adminpanel, text='Admin Panel', font='Relaway', bg=darkgrey, fg=white)
         admnpnllbl.grid(row=0, column=1, columnspan=4, pady=50, padx=20)
-        hrbtn = tk.Button(adminpanel, text='Human Resources', command=lambda: load_employees(), font='Relaway')
+        hrbtn = tk.Button(adminpanel, text='Human Resources', command=lambda: load_employees(employee), font='Relaway')
         hrbtn.grid(row=1, column=2, pady=50, padx=20)
-        sectorbtn = tk.Button(adminpanel, text='Sectors', command=lambda: load_sector(), font='Relaway')
+        sectorbtn = tk.Button(adminpanel, text='Sectors', command=lambda: load_sector(employee), font='Relaway')
         sectorbtn.grid(row=1, column=3, pady=50, padx=20)
         backbtn = tk.Button(adminpanel, text='Back', command=lambda: load_homescreen(), font='Relaway')
         backbtn.grid(row=2, column=0, columnspan=4, pady=50, padx=20, sticky='nesw')
 
 
 # Create employee screen
-def load_employees():
+def load_employees(user):
     base.geometry('1150x675+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     employees.tkraise()
@@ -465,7 +466,7 @@ def load_employees():
                         cursor='hand2')
     dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltempl.grid(row=1, column=0, pady=30, padx=20)
-    backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=15, font='Raleway',
+    backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(user), height=1, width=15, font='Raleway',
                          cursor='hand2')
     backempl.grid(row=3, column=0, pady=417, padx=20)
 
@@ -577,7 +578,7 @@ def deleteempl():
 
 
 # Create sector screen
-def load_sector():
+def load_sector(user):
     base.geometry('725x675+' + str(height) + '+' + str(width))
     clear_screen(homescreen)
     sector.tkraise()
@@ -630,7 +631,7 @@ def load_sector():
                        cursor='hand2')
     dltsec.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltsec.grid(row=3, column=0, pady=30, padx=20)
-    secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(inemployee), height=1, width=13, font='Raleway',
+    secback = tk.Button(sector, text='Back', command=lambda: load_adminpanel(user), height=1, width=13, font='Raleway',
                         cursor='hand2')
     secback.grid(row=6, column=0, pady=113, padx=20)
     minutes_spent_week_in_all_sectors_btn = tk.Button(sector, text='Week Sector Stats',
