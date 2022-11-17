@@ -97,16 +97,20 @@ def encodefaces(cuid):
     :param cuid: str
     :return: encodedimages an array of 128 values which is the encoded face image
     """
+    counter = 0
     encodedimages = {}
     for dirpath, dnames, fnames in os.walk('C:/AdvancedAttendanceSystem/FaceImages/'):
         photoname = cuid + '.jpg'
         for f in fnames:
             if f == photoname:
-            # if f.endswith('.jpg'):
-            #     faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + f)
+                # if f.endswith('.jpg'):
+                #     faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + f)
                 faceimage = face_recognition.load_image_file('C:/AdvancedAttendanceSystem/FaceImages/' + photoname)
                 encoding = face_recognition.face_encodings(faceimage)[0]
                 encodedimages[f.split(".")[0]] = encoding
+            # counter += 1
+
+    # print('iterations:', counter, '\nencodedimages count:', len(encodedimages))
     return encodedimages
 
 
@@ -134,7 +138,8 @@ def f_recognition(cuid):
 
         face_name = []
         for encodedface in face_encode_frame:
-            matches = face_recognition.compare_faces(faces, encodedface)
+            matches = face_recognition.compare_faces(faces, encodedface, tolerance=0.6)
+            # matches = face_recognition.compare_faces(faces, encodedface)
             name = "Unknown"
 
             fdistance = face_recognition.face_distance(faces, encodedface)
