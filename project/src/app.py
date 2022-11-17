@@ -319,7 +319,8 @@ def login():
         if (inemployee is not None) and (cameraemployeename == readercarduid):
             functionsfile.enter_work_area(inemployee)
             showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
-            load_adminpanel(inemployee)
+            if inemployee[8] == 1:
+                load_adminpanel(inemployee)
         else:
             showinfo('Info', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to HR')
             supervisoraccess(True)
@@ -356,7 +357,8 @@ def grant(enter: bool, uid: str):
         if inemployee is not None:
             functionsfile.enter_work_area(inemployee)
             showinfo('Info', 'Welcome ' + inemployee[1] + ' ' + inemployee[2] + ' have a nice day')
-            load_adminpanel(inemployee)
+            if inemployee[8] == 1:
+                load_adminpanel(inemployee)
             grantaccess.destroy()
     else:
         if inemployee is not None:
@@ -458,11 +460,11 @@ def load_employees(user):
             employeetable.insert(parent='', index='end', iid=str(i), values=result, tags=('odd',))
         counter += 1
     employeetable.grid(row=0, column=1, rowspan=5, sticky='new', pady=30, padx=40)
-    updtempl = tk.Button(employees, text='Update Employee', command=lambda: updempl(), height=1, width=15,
+    updtempl = tk.Button(employees, text='Update Employee', command=lambda: updempl(user), height=1, width=15,
                          font='Raleway', cursor='hand2')
     updtempl.configure(bg=blue, fg=white, activebackground=blue, activeforeground=white)
     updtempl.grid(row=0, column=0, pady=30, padx=20)
-    dltempl = tk.Button(employees, text='Delete', command=lambda: deleteempl(), height=1, width=15, font='Raleway',
+    dltempl = tk.Button(employees, text='Delete', command=lambda: deleteempl(user), height=1, width=15, font='Raleway',
                         cursor='hand2')
     dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltempl.grid(row=1, column=0, pady=30, padx=20)
@@ -472,7 +474,7 @@ def load_employees(user):
 
 
 # Creating update employee pop up
-def updempl():
+def updempl(user):
     if employeetable.focus() != "":
         global empludtpu
         empludtpu = Toplevel()
@@ -542,7 +544,7 @@ def updempl():
         esec.grid(row=7, column=1, pady=20, padx=20)
 
         updemp = tk.Button(empludtpu, text='Update',
-                           command=lambda: employeeupdate(), height=1, width=10, font='Raleway', cursor='hand2')
+                           command=lambda: employeeupdate(user), height=1, width=10, font='Raleway', cursor='hand2')
         updemp.configure(bg=blue, fg=white, activebackground=blue, activeforeground=white)
         updemp.grid(row=8, column=1, pady=20, padx=20)
         cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10,
@@ -552,11 +554,11 @@ def updempl():
         showerror('Error', 'Select the employee you want to edit and try again')
 
 
-def employeeupdate():
+def employeeupdate(user):
     try:
         databasefile.updateemployee(eid.get(), efn.get(), eln.get(), eemail.get(), ephone.get(), ejp.get(),
                                     esec.get().split()[0]),
-        load_employees()
+        load_employees(user)
         empludtpu.destroy()
     except sqlite3.Error:
         showerror('Error', 'There are employees working in this sector\n'
@@ -566,11 +568,11 @@ def employeeupdate():
 
 
 # Delete the selected employee
-def deleteempl():
+def deleteempl(user):
     try:
         selection = employeetable.item(employeetable.focus()).get('values')[0]  # Grabbing employee's unique id
         databasefile.deleteemployee(selection)
-        load_employees()
+        load_employees(user)
     except sqlite3.Error:
         showerror('Error', 'Something went wrong try again')
     except:
@@ -619,15 +621,15 @@ def load_sector(user):
         counter += 1
     sectortable.grid(row=1, column=1, rowspan=6, sticky='new', pady=30, padx=40)
 
-    insrtsec = tk.Button(sector, text='Insert Sector', command=lambda: insec(), height=1, width=13, font='Raleway',
+    insrtsec = tk.Button(sector, text='Insert Sector', command=lambda: insec(user), height=1, width=13, font='Raleway',
                          cursor='hand2')
     insrtsec.configure(bg=green, fg=white, activebackground=green, activeforeground=white)
     insrtsec.grid(row=1, column=0, pady=30, padx=20)
-    updsec = tk.Button(sector, text='Update Sector', command=lambda: updtsec(), height=1, width=13, font='Raleway',
+    updsec = tk.Button(sector, text='Update Sector', command=lambda: updtsec(user), height=1, width=13, font='Raleway',
                        cursor='hand2')
     updsec.configure(bg=blue, fg=white, activebackground=blue, activeforeground=white)
     updsec.grid(row=2, column=0, pady=30, padx=20)
-    dltsec = tk.Button(sector, text='Delete', command=lambda: deletesec(), height=1, width=13, font='Raleway',
+    dltsec = tk.Button(sector, text='Delete', command=lambda: deletesec(user), height=1, width=13, font='Raleway',
                        cursor='hand2')
     dltsec.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
     dltsec.grid(row=3, column=0, pady=30, padx=20)
@@ -645,14 +647,14 @@ def load_sector(user):
 
 
 # Delete the selected sector
-def deletesec():
+def deletesec(user):
     # if (len(sctridentry.get()) == 0) and (sectortable.focus() == ""):
     #     showerror('Error', 'Something went wrong\nPlease try again')
     # else if
     try:
         selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
         databasefile.deletesector(int(selection))
-        load_sector()
+        load_sector(user)
     except sqlite3.Error:
         showerror('Error', 'There are employees working in this sector\n'
                            'Delete or move them to another sector and try again')
@@ -660,7 +662,7 @@ def deletesec():
         showerror('Error', 'Something went wrong\nPlease try again')
 
 
-def insec():
+def insec(user):
     global sctrinsrtpu, secnameentry
     sctrinsrtpu = Toplevel()
     sctrinsrtpu.title('AAS - Add new sector')
@@ -676,7 +678,7 @@ def insec():
     secnameentry = tk.Entry(sctrinsrtpu, width=30)
     secnameentry.grid(row=0, column=1, pady=20, padx=8)
     secnameentry.focus()
-    addsector = tk.Button(sctrinsrtpu, text='Add sector', command=lambda: insertsec(), height=1,
+    addsector = tk.Button(sctrinsrtpu, text='Add sector', command=lambda: insertsec(user), height=1,
                           width=10, font='Raleway', cursor='hand2')
     addsector.configure(bg=blue, fg=white)
     addsector.grid(row=1, column=1, pady=20, padx=20)
@@ -685,13 +687,13 @@ def insec():
     cancelsector.grid(row=1, column=0, pady=20, padx=15)
 
 
-def insertsec():
+def insertsec(user):
     if len(secnameentry.get()) > 0:
         try:
             databasefile.insertsector(secnameentry.get())
             showinfo('Info', 'New sector has been inserted succesfully')
             sctrinsrtpu.destroy()
-            load_sector()
+            load_sector(user)
         except:
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
@@ -699,7 +701,7 @@ def insertsec():
 
 
 # Create sector's update pop up
-def updtsec():
+def updtsec(user):
     global sctrupdtpu, secnameup
     if sectortable.focus() != "":
         sctrupdtpu = Toplevel()
@@ -716,7 +718,7 @@ def updtsec():
         secnameup = tk.Entry(sctrupdtpu, width=30)
         secnameup.grid(row=0, column=1, pady=20, padx=8)
         secnameup.focus()
-        updtsector = tk.Button(sctrupdtpu, text='Update', command=lambda: updatesector(), height=1, width=10,
+        updtsector = tk.Button(sctrupdtpu, text='Update', command=lambda: updatesector(user), height=1, width=10,
                                font='Raleway', cursor='hand2')
         updtsector.configure(bg=blue, fg=white)
         updtsector.grid(row=1, column=1, pady=20, padx=20)
@@ -727,14 +729,14 @@ def updtsec():
         showerror('Error', 'Select a sector first and then try again')
 
 
-def updatesector():
+def updatesector(user):
     if len(secnameup.get()) > 0:
         try:
             selection = sectortable.item(sectortable.focus()).get('values')[0]  # Grabbing sector's id
             databasefile.updatesector(selection, secnameup.get().upper())
             showinfo('Info', 'Sector has been updated succesfully')
             sctrupdtpu.destroy()
-            load_sector()
+            load_sector(user)
         except:
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
