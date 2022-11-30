@@ -136,6 +136,9 @@ def f_recognition(cuid):
         face_loc_frame = face_recognition.face_locations(frame_small)
         face_encode_frame = face_recognition.face_encodings(frame_small, face_loc_frame)
 
+        # print('encoded image:', images)
+        # print('encoded web camera:', face_encode_frame)
+
         face_name = []
         for encodedface in face_encode_frame:
             matches = face_recognition.compare_faces(faces, encodedface, tolerance=0.6)
@@ -143,6 +146,10 @@ def f_recognition(cuid):
             name = "Unknown"
 
             fdistance = face_recognition.face_distance(faces, encodedface)
+
+            # print('distance:', fdistance)
+            # print('is a match:', matches)
+
             bestmatch = np.argmin(fdistance)
             if matches[bestmatch]:
                 name = names[bestmatch]
@@ -157,7 +164,7 @@ def f_recognition(cuid):
     cap.release()
     cv2.destroyAllWindows()
 
-    print(datetime.now() - startnow)
+    # print(datetime.now() - startnow)
     return name
 
 
