@@ -246,3 +246,43 @@ def deleteemployee(cuid: str):
     employeeimg = 'C:/AdvancedAttendanceSystem/FaceImages/' + cuid + '.jpg'
     os.remove(employeeimg)
     return
+
+
+def admincount():
+    """
+    Checks if there is any admin
+
+    :return: 1 if there is exactly one admin, 0 if there is less than 1 and 2 if there are more admin than 1
+    """
+    conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(e.uid) FROM EMPLOYEE e WHERE job_position = 'ADMIN';")
+    res = cur.fetchall()
+    conn.commit()
+    conn.close()
+    if [item[0] for item in res][0] == 1:
+        return 1
+    elif [item[0] for item in res][0] <= 0:
+        return 0
+    else:
+        return 2
+
+
+def isadmin(uid: str):
+    """
+    Checks if the current user is the admin
+
+    :return: True if the current user is the admin and False otherwise
+    """
+    adminis = False
+    conn = sqlite3.connect('C:/AdvancedAttendanceSystem/AdvancedAttendanceSystem.db')
+    cur = conn.cursor()
+    cur.execute("SELECT e.job_position FROM EMPLOYEE e WHERE e.uid =(?);", (uid, ))
+    res = cur.fetchone()
+    conn.commit()
+    conn.close()
+    if res[0] == 'ADMIN':
+        adminis = True
+    else:
+        adminis = False
+    return adminis
