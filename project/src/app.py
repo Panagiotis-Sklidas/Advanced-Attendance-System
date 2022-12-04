@@ -294,6 +294,8 @@ def accept():
                   'Something went wrong:\n1) All or some values may be missing\n2) There are some letters in phone '
                   'number\n3) The employee is not old enough (18 years old)\n4) There is not a saved face image for the'
                   ' employee\nMake sure that you have check all of the above and try again')
+    elif (databasefile.admincount() == 1) and jp.get().upper() == 'ADMIN':
+        showerror('Error', 'There is already an ADMIN\nChange your job position and try again')
     else:
         # Tries to insert umployee
         sector = se.get().split()
@@ -473,13 +475,20 @@ def load_employees(user):
                          font='Raleway', cursor='hand2')
     updtempl.configure(bg=blue, fg=white, activebackground=blue, activeforeground=white)
     updtempl.grid(row=0, column=0, pady=30, padx=20)
-    dltempl = tk.Button(employees, text='Delete', command=lambda: deleteempl(user), height=1, width=15, font='Raleway',
-                        cursor='hand2')
-    dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
-    dltempl.grid(row=1, column=0, pady=30, padx=20)
-    backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(user), height=1, width=15, font='Raleway',
-                         cursor='hand2')
-    backempl.grid(row=3, column=0, pady=417, padx=20)
+
+    if databasefile.isadmin(user[0]):
+        dltempl = tk.Button(employees, text='Delete', command=lambda: deleteempl(user), height=1, width=15,
+                            font='Raleway', cursor='hand2')
+        dltempl.configure(bg=red, fg=white, activebackground=red, activeforeground=white)
+        dltempl.grid(row=1, column=0, pady=30, padx=20)
+        backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(user), height=1, width=15,
+                             font='Raleway',
+                             cursor='hand2')
+        backempl.grid(row=3, column=0, pady=417, padx=20)
+    else:
+        backempl = tk.Button(employees, text='Back', command=lambda: load_adminpanel(user), height=1, width=15,
+                             font='Raleway', cursor='hand2')
+        backempl.grid(row=3, column=0, pady=513, padx=20)
 
 
 # Creating update employee pop up
@@ -564,16 +573,20 @@ def updempl(user):
 
 
 def employeeupdate(user):
-    try:
-        databasefile.updateemployee(eid.get(), efn.get(), eln.get(), eemail.get(), ephone.get(), ejp.get(),
-                                    esec.get().split()[0]),
-        load_employees(user)
-        empludtpu.destroy()
-    except sqlite3.Error:
-        showerror('Error', 'There are employees working in this sector\n'
-                           'Delete or move them to another sector and try again')
-    finally:
-        showerror('Error', 'Something went wrong\nPlease try again')
+    if not ejp.get().upper() == 'ADMIN':
+
+        try:
+            databasefile.updateemployee(eid.get(), efn.get(), eln.get(), eemail.get(), ephone.get(), ejp.get(),
+                                        esec.get().split()[0]),
+            load_employees(user)
+            empludtpu.destroy()
+        except sqlite3.Error as e:
+            showerror('Error', e)
+        finally:
+            showerror('Error', 'Something went wrong\nPlease try again')
+    else:
+        showerror('Error', 'There is already an ADMIN\nChange your job position and try again')
+
 
 
 # Delete the selected employee
