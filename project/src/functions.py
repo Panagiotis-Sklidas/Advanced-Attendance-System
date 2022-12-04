@@ -27,7 +27,7 @@ def createfilepath():
                 prbo_write = csv.writer(csvw)
                 prbo_write.writerow(['UID', 'First name', 'Last name', 'Sector', 'Entrance date', 'Year', 'Week',
                                      'Entrance time', 'Exit time', 'Residence time'])
-        except:
+        except csv.Error:
             print(csv.Error())
 
 
@@ -40,8 +40,9 @@ def readuid():
     :return: RFID/NFC card's uid
     """
     r = readers()
-    if len(r) < 1:
-        print('No readers available')
+    # if len(r) < 1:
+    #     # print('No readers available')
+    #     raise BaseException('NoReadersAvailable')
 
     reader = r[0]
 
@@ -165,7 +166,11 @@ def f_recognition(cuid):
     cv2.destroyAllWindows()
 
     # print(datetime.now() - startnow)
-    return name
+    # return name
+    try:
+        return name
+    except UnboundLocalError:
+        pass
 
 
 def enter_work_area(employee: tuple):

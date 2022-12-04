@@ -7,6 +7,7 @@ from tkinter import *
 from tkinter.messagebox import *
 from tkinter import ttk
 from PIL import ImageTk, Image
+from smartcard.Exceptions import *
 from tkcalendar import DateEntry
 import database as databasefile
 import functions as functionsfile
@@ -255,12 +256,14 @@ def cuid():
         cardid = functionsfile.readuid()
         cid.insert(0, cardid)
         cid.configure(state='disabled')
-    except:
-        showerror('Error', 'Check if the RFID/NFC reader is connected to the system or if its light is solid green'
-                           ' and try again')
+    except NoCardException:
+        showerror('Error', 'Either the smart card has been removed, so that further communication is not possible or '
+                           'there are more than one smart cards near the reader')
+    except IndexError:
+        showerror('Error', 'Check if the RFID/NFC reader is connected to the system and try again')
+
+
 # Tries to generate email using the function generateemail from functions.py
-
-
 def gemail():
     email.configure(state='normal')
     email.delete(0, END)
@@ -324,8 +327,11 @@ def login():
         else:
             showinfo('Info', 'The card\'s uid does not match the face image\nMake sure to use your card or talk to HR')
             supervisoraccess(True)
-    except:
-        showerror('Error', 'Something went wrong try again or talk to HR')
+    except NoCardException:
+        showerror('Error', 'Either the smart card has been removed, so that further communication is not possible or '
+                           'there are more than one smart cards near the reader')
+    except IndexError:
+        showerror('Error', 'Check if the RFID/NFC reader is connected to the system and try again or talk to HR')
         supervisoraccess(True)
 
 
@@ -378,8 +384,11 @@ def logout():
             showinfo('Error', 'The card\'s uid does not match any uid in the database\nMake sure to use your card or '
                               'talk to HR')
             supervisoraccess(False)
-    except:
-        showerror('Error', 'Something went wrong try again or talk to HR')
+    except NoCardException:
+        showerror('Error', 'Either the smart card has been removed, so that further communication is not possible or '
+                           'there are more than one smart cards near the reader')
+    except IndexError:
+        showerror('Error', 'Check if the RFID/NFC reader is connected to the system and try again')
         supervisoraccess(False)
 
 
@@ -563,7 +572,7 @@ def employeeupdate(user):
     except sqlite3.Error:
         showerror('Error', 'There are employees working in this sector\n'
                            'Delete or move them to another sector and try again')
-    except:
+    finally:
         showerror('Error', 'Something went wrong\nPlease try again')
 
 
@@ -575,7 +584,7 @@ def deleteempl(user):
         load_employees(user)
     except sqlite3.Error:
         showerror('Error', 'Something went wrong try again')
-    except:
+    finally:
         showerror('Error', 'Something went wrong\nPlease try again')
 
 
@@ -658,7 +667,7 @@ def deletesec(user):
     except sqlite3.Error:
         showerror('Error', 'There are employees working in this sector\n'
                            'Delete or move them to another sector and try again')
-    except:
+    finally:
         showerror('Error', 'Something went wrong\nPlease try again')
 
 
@@ -694,7 +703,7 @@ def insertsec(user):
             showinfo('Info', 'New sector has been inserted succesfully')
             sctrinsrtpu.destroy()
             load_sector(user)
-        except:
+        except sqlite3.Error:
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
         showerror('Error', 'Please make sure you add a sector name and try again')
@@ -737,7 +746,7 @@ def updatesector(user):
             showinfo('Info', 'Sector has been updated succesfully')
             sctrupdtpu.destroy()
             load_sector(user)
-        except:
+        except sqlite3.Error:
             showerror('Error', 'Something went wrong\nPlease try again')
     else:
         showerror('Error', 'Please make sure you add a sector name and try again')
