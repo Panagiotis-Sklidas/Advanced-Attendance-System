@@ -309,8 +309,8 @@ def accept():
             useradded = tk.Label(signup, text='User added successfully', bg=darkgrey, fg=green, font='Raleway')
             useradded.grid(row=11, column=0, columnspan=3)
             # userAdded.after(1500, userAdded.grid_forget())
-        except:
-            showerror('Error', 'This uid already exist\nPlease ask for a different card')
+        except sqlite3.IntegrityError:
+            showerror('Error', 'There is already a user with this id\nGet a new card and try again')
 
 
 global inemployee
