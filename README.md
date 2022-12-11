@@ -51,7 +51,7 @@ In order to run the application locally you should have the following installed:
 ```
 pip install opencv-python
 ```
-* face_recognition (Find more [here](https://github.com/ageitgey/face_recognition))
+* face_recognition (Find more [here](https://github.com/ageitgey/face_recognition)/troubleshooting video [here](https://www.youtube.com/watch?v=D5xqcGk6LEc#t=2m15s))
 * pyscard 2.0.5
 ```
 pip install pyscard
