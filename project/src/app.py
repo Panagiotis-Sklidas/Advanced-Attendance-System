@@ -493,7 +493,7 @@ def load_employees(user):
 
 # Creating update employee pop up
 def updempl(user):
-    if employeetable.focus() != "":
+    if employeetable.focus() != "" and employeetable.item(employeetable.focus()).get('values')[7] != 'ADMIN':
         global empludtpu
         empludtpu = Toplevel()
         empludtpu.title('AAS - Update employee')
@@ -568,6 +568,8 @@ def updempl(user):
         cancelemp = tk.Button(empludtpu, text='Cancel', command=lambda: empludtpu.destroy(), height=1, width=10,
                               font='Raleway', cursor='hand2')
         cancelemp.grid(row=8, column=0, pady=20, padx=20)
+    elif employeetable.item(employeetable.focus()).get('values')[7] == 'ADMIN':
+        showerror('Error', 'Admin\'s data can not be edited')
     else:
         showerror('Error', 'Select the employee you want to edit and try again')
 
@@ -582,8 +584,8 @@ def employeeupdate(user):
             empludtpu.destroy()
         except sqlite3.Error as e:
             showerror('Error', e)
-        finally:
-            showerror('Error', 'Something went wrong\nPlease try again')
+        # finally:
+        #     showerror('Error', 'Something went wrong\nPlease try again')
     else:
         showerror('Error', 'There is already an ADMIN\nChange your job position and try again')
 
@@ -591,14 +593,17 @@ def employeeupdate(user):
 
 # Delete the selected employee
 def deleteempl(user):
-    try:
-        selection = employeetable.item(employeetable.focus()).get('values')[0]  # Grabbing employee's unique id
-        databasefile.deleteemployee(selection)
-        load_employees(user)
-    except sqlite3.Error:
-        showerror('Error', 'Something went wrong try again')
-    finally:
-        showerror('Error', 'Something went wrong\nPlease try again')
+    if employeetable.item(employeetable.focus()).get('values')[7] != 'ADMIN':
+        try:
+            selection = employeetable.item(employeetable.focus()).get('values')[0]  # Grabbing employee's unique id
+            databasefile.deleteemployee(selection)
+            load_employees(user)
+        except sqlite3.Errorc as e:
+            showerror('Error', e)
+        finally:
+            showerror('Error', 'Something went wrong\nPlease try again')
+    else:
+        showerror('Error', 'Admin can not be deleted')
 
 
 # Create sector screen
