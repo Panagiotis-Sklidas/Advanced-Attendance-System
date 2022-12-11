@@ -1,6 +1,10 @@
 # Advanced Attendance System
+
 <div align="center">
     <img src="https://www.ihu.edu.gr/images/logos/IHU_logo_blue_en.jpg" alt="International Hellenic University logo" width="auto", height="200">
+    
+[![CodeFactor](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system/badge)](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system)
+
 </div>
 
 <!-- Contents -->
@@ -23,7 +27,7 @@ controlled access into the workplace of employees with the help of an RFID smart
 
 <!-- Features -->
 ### Features
- * New User Registration
+ * New user registration
  * Entry time recording with details from the RFID smart card and recognition of the employee's face
  * Record the time of exit using the details from the smart RFID card of the employee
  * CRUD and statistics view functions available to specific users
@@ -33,6 +37,7 @@ controlled access into the workplace of employees with the help of an RFID smart
 
 <!-- Prerequisites -->
 ### Prerequisites
+
 In order to use this application you should have the following hardware:
 * Webcam
 * RFID/NFC reader (I used ACR122U USB NFC Reader form Advanced Card Systeems Ltd.)
@@ -40,10 +45,35 @@ In order to use this application you should have the following hardware:
 
 <!-- Run Locally-->
 ### Run Locally
+In order to run the application locally you should have the following installed:
+* Python 3.9.6 (Download [here](https://www.python.org/downloads/release/python-396/))
+* opencv-python 4.6.0.66
+```
+pip install opencv-python
+```
+* face_recognition (Find more [here](https://github.com/ageitgey/face_recognition))
+* pyscard 2.0.5
+```
+pip install pyscard
+```
+* Pillow 9.3.0
+```
+pip install Pillow
+```
+
+After installing all of the above you can build and run the application in your <strong>Windows</strong> machine using the following command:
+```
+<filepath> python app.py
+```
 
 <!-- Installation -->
 ### Installation
+To be able to install the application you should have a Windows 10 x64bit machine.
 
+* In order to install the application you should run the Advanced Attendance System.exe with <strong>administration</strong> rights 
+* In order to delete/remove the app run as <strong>administrator</strong> the Uninstaller.bat
+<br><br>
+Download the files from [here](https://github.com/Panagiotis-Sklidas/Advanced-Attendance-System/releases/tag/v1.0.3)
 
 <!-- Usage -->
 ## Usage
