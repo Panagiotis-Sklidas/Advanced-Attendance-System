@@ -77,6 +77,7 @@ Download the files from [here](https://github.com/Panagiotis-Sklidas/Advanced-At
 
 <!-- Usage -->
 ## Usage
+Please read the user manual, that you will find [here](https://github.com/Panagiotis-Sklidas/Advanced-Attendance-System/blob/main/User%20Manual%20AAS.en.pdf).
 
 <!-- License -->
 ## License
