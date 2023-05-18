@@ -1,11 +1,14 @@
 # Advanced Attendance System
 
-<div align="center">
-    <img src="https://www.ihu.edu.gr/images/logos/IHU_logo_blue_en.jpg" alt="International Hellenic University logo" width="auto", height="200">
+<div>
+    <div align="center">
+        <img src="https://www.ihu.edu.gr/images/logos/IHU_logo_blue_en.jpg" alt="International Hellenic University logo" width="auto", height="200">
+    </div>
+<br>
     
 [![CodeFactor](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system/badge)](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system)
 
-</div>
+</div><br>
 
 <!-- Contents -->
 # Contents
