@@ -8,7 +8,7 @@
     
 [![CodeFactor](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system/badge)](https://www.codefactor.io/repository/github/panagiotis-sklidas/advanced-attendance-system)
 
-</div><br>
+</div>
 
 <!-- Contents -->
 # Contents
