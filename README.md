@@ -19,6 +19,7 @@
   * [Prerequisites](#prerequisites)
   * [Run locally](#run-locally)
   * [Installation](#installation)
+    * [Screenshots](#screenshots)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
@@ -64,6 +65,18 @@ pip install pyscard
 pip install Pillow
 ```
 
+<br>
+
+Note:
+Or you can use the following commands to auto-install all dependencies 
+```
+# Enter project folder
+cd project/
+
+# Install all dependencies
+pip install -r requirements.txt
+```
+
 After installing all of the above you can build and run the application in your <strong>Windows</strong> machine using the following command:
 ```
 <filepath> python app.py
@@ -81,6 +94,13 @@ Download the files from [here](https://github.com/Panagiotis-Sklidas/Advanced-At
 <!-- Usage -->
 ## Usage
 Please read the user manual, that you will find [here](https://github.com/Panagiotis-Sklidas/Advanced-Attendance-System/blob/main/User%20Manual%20AAS.en.pdf).
+
+### Screenshots
+
+<img src="img/homescreen.png" alt="App homescreen" width=75% height="75%"/>
+<img src="img/signin.png" alt="Sign in screen" width=75% height="50%"/>
+<img src="img/successhomescren.png" alt="" width=75% height="75%"/>
+<img src="img/HRScreen.png" alt="HR panel" width=75% height="75%"/>
 
 <!-- License -->
 ## License
