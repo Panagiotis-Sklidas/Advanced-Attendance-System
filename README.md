@@ -140,4 +140,4 @@ SUBJECT AREA: Software study, design and development
 <br>
 KEYWORDS: RFID/NFC, Face recognition, Python - Tkinter application, Windows desktop application.
 
-- [IHU Website](https://www.cs.ihu.gr/index.xhtml;jsessionid=Jy-71XCR7OeMGBi-uXAygMK5mHmdBjHdvOYKjV-1.javaee2?language=en)
+- [IHU Website](https://www.cs.duth.gr/) (Currently: Democritus University of Thrace, Kavala Campus)
